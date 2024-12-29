@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mdscript name="XenonBuffOptions" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="md.xsd">
+	<cues>
+		<cue name="Init" instantiate="false">
+			<actions>
+				<!-- Core table -->
+				<set_value name="global.$XenonBuff" exact="table[]"/>
+				<!-- Main variables -->
+				<set_value name="global.$XenonBuff.$HoldSectors" exact="table[]"/>
+				<set_value name="global.$XenonBuff.$Invasion" exact="table[]"/>
+				<set_value name="global.$XenonBuff.$PsiEmitter" exact="table[]"/>
+				<!-- HoldSectors -->
+				<set_value name="global.$XenonBuff.$HoldSectors.$Enabled" exact="false"/>
+				<!-- Invasion -->
+				<set_value name="global.$XenonBuff.$Invasion.$Enabled" exact="false"/>
+				<!-- KhaaksFleetEnabled -->
+				<set_value name="global.$XenonBuff.$Invasion.$KhaaksFleetEnabled" exact="false"/>
+				<!-- PsiEmitter -->
+				<set_value name="global.$XenonBuff.$PsiEmitter.$Enabled" exact="false"/>
+				<set_value name="$TextGreen" exact="'Color.text_success'"/>
+				<set_value name="$TextRed" exact="'Color.text_failure'"/>
+				<debug_text text="'MOD: XenonBuff -- Initial options set.'" context="false" filter="scripts"/>
+			</actions>
+			<cues>
+				<cue name="CheckVariablesExist" instantiate="true" version="2">
+					<conditions>
+						<check_any>
+							<event_universe_generated/>
+							<event_game_loaded/>
+							<event_cue_signalled/>
+						</check_any>
+					</conditions>
+					<actions>
+						<set_value name="$MissingVarCount" exact="0"/>
+						<!-- Core table -->
+						<do_if value="not global.$XenonBuff?">
+							<set_value name="global.$XenonBuff" exact="table[]"/>
+							<set_value name="$MissingVarCount" exact="1" operation="add"/>
+						</do_if>
+						<!-- Main variables -->
+						<do_if value="not global.$XenonBuff.$HoldSectors?">
+							<set_value name="global.$XenonBuff.$HoldSectors" exact="table[]"/>
+							<set_value name="$MissingVarCount" exact="1" operation="add"/>
+						</do_if>
+						<do_if value="not global.$XenonBuff.$Invasion?">
+							<set_value name="global.$XenonBuff.$Invasion" exact="table[]"/>
+							<set_value name="$MissingVarCount" exact="1" operation="add"/>
+						</do_if>
+						<do_if value="not global.$XenonBuff.$PsiEmitter?">
+							<set_value name="global.$XenonBuff.$PsiEmitter" exact="table[]"/>
+							<set_value name="$MissingVarCount" exact="1" operation="add"/>
+						</do_if>
+						<!-- HoldSectors -->
+						<do_if value="not global.$XenonBuff.$HoldSectors.$Enabled?">
+							<set_value name="global.$XenonBuff.$HoldSectors.$Enabled" exact="false"/>
+							<set_value name="$MissingVarCount" exact="1" operation="add"/>
+						</do_if>
+						<!-- Invasion -->
+						<do_if value="not global.$XenonBuff.$Invasion.$Enabled?">
+							<set_value name="global.$XenonBuff.$Invasion.$Enabled" exact="false"/>
+							<set_value name="$MissingVarCount" exact="1" operation="add"/>
+						</do_if>
+						<!-- KhaaksFleetEnabled -->
+						<do_if value="not global.$XenonBuff.$Invasion.$KhaaksFleetEnabled?">
+							<set_value name="global.$XenonBuff.$Invasion.$KhaaksFleetEnabled" exact="false"/>
+							<set_value name="$MissingVarCount" exact="1" operation="add"/>
+						</do_if>
+						<!-- PsiEmitter -->
+						<do_if value="not global.$XenonBuff.$PsiEmitter.$Enabled?">
+							<set_value name="global.$XenonBuff.$PsiEmitter.$Enabled" exact="false"/>
+							<set_value name="$MissingVarCount" exact="1" operation="add"/>
+						</do_if>
+						<!-- Text Colors -->
+						<do_if value="not $TextGreen?">
+							<set_value name="$TextGreen" exact="'Color.text_success'"/>
+							<set_value name="$TextRed" exact="'Color.text_failure'"/>
+							<set_value name="$MissingVarCount" exact="1" operation="add"/>
+						</do_if>
+						<!-- Output -->
+						<debug_text text="'MOD: XenonBuff -- Number of missing variables set: %s.'.[$MissingVarCount]" context="false" filter="scripts"/>
+						<remove_value name="$MissingVarCount"/>
+						<set_value name="$LastVariableCheck" exact="player.age"/>
+					</actions>
+				</cue>
+				<cue name="Register_Options_Menu" instantiate="true">
+					<conditions>
+						<event_cue_signalled cue="md.Simple_Menu_API.Reloaded"/>
+					</conditions>
+					<actions>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Register_Options_Menu" param="table[$id = 'xenon_buff_options_menu', $columns = 8, $title   = {1972092403,5000}, $onOpen  = Main_Menu ]"/>
+					</actions>
+				</cue>
+				<cue name="Main_Menu" instantiate="true">
+					<conditions>
+						<event_cue_signalled/>
+					</conditions>
+					<actions>
+						<set_value name="$XenonBuffDebug" exact="true"/>
+						<do_if value="player.age gt (@$LastVariableCheck + 5s)">
+							<signal_cue_instantly cue="CheckVariablesExist"/>
+						</do_if>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Add_Row"/>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Make_Text" param="table[
+								$col = 1,
+								$colSpan = 6,
+								$text = {1972092403,5101},
+								$mouseOverText= {1972092403,6101},
+							]"/>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Make_Button" param="table[
+								$col = 7,
+								$colSpan = 2,
+								$text = table[
+								  $text   =  if global.$XenonBuff.$HoldSectors.$Enabled then {1001,4825} else {1001,8942},
+								  $color  =  if global.$XenonBuff.$HoldSectors.$Enabled then $TextGreen else $TextRed,
+								  $halign = 'center',
+								],
+								$onClick = Execute_DynamicEnable,
+								$onRightClick = Execute_DynamicEnable,
+								$echo = ['$HoldSectors', '$Enabled', global.$XenonBuff.$HoldSectors.$Enabled]
+							]"/>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Add_Row"/>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Make_Text" param="table[
+								$col = 1,
+								$colSpan = 6,
+								$text = {1972092403,5201},
+								$mouseOverText= {1972092403,6201},
+							]"/>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Make_Button" param="table[
+								$col = 7,
+								$colSpan = 2,
+								$text = table[
+								  $text   =  if global.$XenonBuff.$Invasion.$Enabled then {1001,4825} else {1001,8942},
+								  $color  =  if global.$XenonBuff.$Invasion.$Enabled then $TextGreen else $TextRed,
+								  $halign = 'center',
+								],
+								$onClick = Execute_DynamicEnable,
+								$onRightClick = Execute_DynamicEnable,
+								$echo = ['$Invasion', '$Enabled', global.$XenonBuff.$Invasion.$Enabled]
+							]"/>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Add_Row"/>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Make_Text" param="table[
+								$col = 1,
+								$colSpan = 6,
+								$text = {1972092403,5202},
+								$mouseOverText= {1972092403,6202},
+							]"/>
+						<do_if value="global.$XenonBuff.$Invasion.$Enabled">
+						<signal_cue_instantly cue="md.Simple_Menu_API.Make_Button" param="table[
+								$col = 7,
+								$colSpan = 2,
+								$text = table[
+								  $text   =  if global.$XenonBuff.$Invasion.$KhaaksFleetEnabled then {1001,4825} else {1001,8942},
+								  $color  =  if global.$XenonBuff.$Invasion.$KhaaksFleetEnabled then $TextGreen else $TextRed,
+								  $halign = 'center',
+								],
+								$onClick = Execute_DynamicEnable,
+								$onRightClick = Execute_DynamicEnable,
+								$echo = ['$Invasion', '$Enabled', global.$XenonBuff.$Invasion.$Enabled]
+							]"/>
+						</do_if>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Add_Row"/>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Make_Text" param="table[
+								$col = 1,
+								$colSpan = 6,
+								$text = {1972092403,5301},
+								$mouseOverText= {1972092403,6301},
+							]"/>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Make_Button" param="table[
+								$col = 7,
+								$colSpan = 2,
+								$text = table[
+								  $text   =  if global.$XenonBuff.$PsiEmitter.$Enabled then {1001,4825} else {1001,8942},
+								  $color  =  if global.$XenonBuff.$PsiEmitter.$Enabled then $TextGreen else $TextRed,
+								  $halign = 'center',
+								],
+								$onClick = Execute_DynamicEnable,
+								$onRightClick = Execute_DynamicEnable,
+								$echo = ['$PsiEmitter', '$Enabled', global.$XenonBuff.$PsiEmitter.$Enabled]
+							]"/>
+					</actions>
+				</cue>
+				<cue name="Execute_DynamicEnable" instantiate="true">
+					<conditions>
+						<event_cue_signalled/>
+					</conditions>
+					<actions>
+						<do_if value="event.param.$echo?">
+							<do_if value="global.$XenonBuff.{event.param.$echo.{1}}.{event.param.$echo.{2}}?">
+								<set_value name="global.$XenonBuff.{event.param.$echo.{1}}.{event.param.$echo.{2}}" exact="not event.param.$echo.{3}"/>
+								<debug_text text="'MOD: XenonBuff -- Updated global.$XenonBuff.%s.%s from %s to %s'.[event.param.$echo.{1},event.param.$echo.{2},event.param.$echo.{3},global.$XenonBuff.{event.param.$echo.{1}}.{event.param.$echo.{2}}]" context="false" filter="scripts"/>
+							</do_if>
+							<do_else>
+								<debug_text text="'MOD: XenonBuff -- ERROR -- could not find global.$XenonBuff.%s.%s'.[event.param.$echo.{1},event.param.$echo.{2}]" context="false" filter="error"/>
+							</do_else>
+						</do_if>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Refresh_Menu"/>
+					</actions>
+				</cue>
+				<cue name="Execute_DynamicSlider" instantiate="true">
+					<conditions>
+						<event_cue_signalled/>
+					</conditions>
+					<actions>
+						<do_if value="event.param.$echo?">
+							<do_if value="global.$XenonBuff.{event.param.$echo.{1}}.{event.param.$echo.{2}}?">
+								<set_value name="global.$XenonBuff.{event.param.$echo.{1}}.{event.param.$echo.{2}}" exact="event.param.$value"/>
+								<debug_text text="'MOD: XenonBuff -- Updated global.$XenonBuff.%s.%s from %s to %s'.[event.param.$echo.{1},event.param.$echo.{2},event.param.$echo.{3},global.$XenonBuff.{event.param.$echo.{1}}.{event.param.$echo.{2}}]" context="false" filter="scripts"/>
+							</do_if>
+							<do_else>
+								<debug_text text="'MOD: XenonBuff -- ERROR -- could not find global.$XenonBuff.%s.%s'.[event.param.$echo.{1},event.param.$echo.{2}]" context="false" filter="error"/>
+							</do_else>
+						</do_if>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Refresh_Menu"/>
+					</actions>
+				</cue>
+			</cues>
+		</cue>
+	</cues>
+</mdscript>

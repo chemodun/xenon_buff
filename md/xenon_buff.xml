@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mdscript name="XenonBuff" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="md.xsd">
 	<cues>
-		<cue name="XenonBuff" instantiate="true" checkinterval="5min" checktime="player.age + 25s">
+		<!-- <cue name="XenonBuff" instantiate="true" checkinterval="5min" checktime="player.age + 25s"> -->
+		<!-- revert back on production -->
+		<cue name="XenonBuff" instantiate="true" checkinterval="1min" checktime="player.age + 25s">
+		<!-- revert back on production -->
 			<conditions>
 				<check_age min="120h"/>
 			</conditions>
@@ -13,76 +16,84 @@
 			<set_value name="player.entity.$LastTimeXenonBuffed" exact="player.age"/>
 			<set_value name="player.entity.$XenonBuffedInvasion" exact="0"/>
 			-->
+				<debug_text text="'XenonBuff - Global HoldSectors Enabled : ' + @global.$XenonBuff.$HoldSectors.$Enabled"/>
+				<debug_text text="'XenonBuff - Global Invasion Enabled : ' + @global.$XenonBuff.$Invasion.$Enabled"/>
+				<debug_text text="'XenonBuff - Get Invasion Status ' + @player.entity.$XenonBuffedInvasion"/>
+				<debug_text text="'XenonBuff - Timer: Delta: ' + @player.entity.$XenonBuffedDelta"/>
+				<debug_text text="'XenonBuff - Timer: Last run: ' + @player.entity.$LastTimeXenonBuffed"/>
+				<debug_text text="'XenonBuff - Timer: game age: ' + player.age"/>
 
-				<debug_text text="'xenonBuff - Get Invasion Status ' + @player.entity.$XenonBuffedInvasion"/>
-				<debug_text text="'xenonBuff - Timer: Delta: ' + @player.entity.$XenonBuffedDelta"/>
-				<debug_text text="'xenonBuff - Timer: Last run: ' + @player.entity.$LastTimeXenonBuffed"/>
-				<debug_text text="'xenonBuff - Timer: game age: ' + player.age"/>
+				<do_if value="@global.$XenonBuff.$HoldSectors.$Enabled or @global.$XenonBuff.$Invasion.$Enabled">
+					<debug_text text="'XenonBuff - Xenon Buffing is enabled'"/>
+					<do_if value="@player.entity.$XenonBuffedInvasion == null">
+						<set_value name="player.entity.$XenonBuffedInvasion" exact="0"/>
+						<debug_text text="'XenonBuff - Setting Invasion Default Status ' + @player.entity.$XenonBuffedInvasion"/>
+					</do_if>
+	<!--
+		<include_actions ref="XenonBuffAddTest"/>
+	-->
 
-				<do_if value="@player.entity.$XenonBuffedInvasion == null">
-					<set_value name="player.entity.$XenonBuffedInvasion" exact="0"/>
-					<debug_text text="'xenonBuff - Setting Invasion Default Status ' + @player.entity.$XenonBuffedInvasion"/>
-				</do_if>
-<!--
-	<include_actions ref="AddTest"/>
--->
-
-				<debug_text text="'xenonBuff - Starting'"/>
-				<do_if value="@player.entity.$XenonBuffedDelta == null">
-					<set_value name="player.entity.$XenonBuffedDelta" exact="0s"/>
-					<debug_text text="'xenonBuff - Setting time delta for first time'"/>
-				</do_if>
-				<do_if value="@player.entity.$LastTimeXenonBuffed == null">
-					<set_value name="player.entity.$LastTimeXenonBuffed" exact="player.age"/>
-					<debug_text text="'xenonBuff - Setting time counter for first time'"/>
-				</do_if>
-				<debug_text text="'xenonBuff - Checking for timer triggers'"/>
-				<do_if value="player.age ge (@player.entity.$LastTimeXenonBuffed + @player.entity.$XenonBuffedDelta)">
-					<debug_text text="'xenonBuff - Start xenon Buffing procedures'"/>
-					<include_actions ref="SetTimers"/>
-					<!-- Refill Xenon Stations storage -->
-					<find_station name="$XenonStations" multiple="true" space="player.galaxy" functional="true">
-						<match_any>
-							<!--Target shipbuilding stations-->
-							<match_content class="class.buildmodule" />
-						</match_any>
-						<!-- Xenon owned -->
-						<match owner="faction.xenon"/>
-					</find_station>
-					<do_all exact="$XenonStations.count" counter="$i">
-						<set_value name="$XenonStation" exact="$XenonStations.{$i}"/>
-						<include_actions ref="AddWares"/>
-					</do_all>
-					<remove_value name="$XenonStations"/>
-					<remove_value name="$XenonStation"/>
-
-					<!-- Add xenon protector and invader fleets -->
-					<include_actions ref="AddProtectors"/>
-					<do_if value="@player.entity.$XenonBuffedInvasion == 0">
-						<set_value name="player.entity.$XenonBuffedInvasion" exact="1"/>
-						<run_actions ref="SetInvasionOrigin" result="$InvadingSector"/>
-						<run_actions ref="SetInvaderFleetTarget" result="$targets"/>
-						<set_value name="$InvasionTarget" exact="$targets.{1}"/>
-						<set_value name="$InvasionOtherTargets" exact="$targets.{2}"/>
-						<!-- Create a notification -->
-						<show_help custom="'Deep space probes has detected an enemy fleet signature heading towards ' + $InvadingSector.name + '. It will arrive whitin minutes.'" log="false" position="1" force="true" duration="8s" comment="Invaders Triggered"/>
-						<set_value name="$Header" exact="'\033R Early Warning System : Invasion Fleet Detected'"/>
-						<set_value name="$Body" exact="'Commander, deep space probes has detected an enemy fleet signature heading towards \033G' + $InvadingSector.name + '\033W. It will arrive whitin minutes.'"/>
-						<write_to_logbook title="$Header" text="$Body" category="alerts"/>
-						<signal_cue_instantly cue="AddInvaderFleet" param="[$InvadingSector, $InvasionTarget, $InvasionOtherTargets]" />
+					<debug_text text="'XenonBuff - Starting'"/>
+					<do_if value="@player.entity.$XenonBuffedDelta == null">
+						<set_value name="player.entity.$XenonBuffedDelta" exact="0s"/>
+						<debug_text text="'XenonBuff - Setting time delta for first time'"/>
+					</do_if>
+					<do_if value="@player.entity.$LastTimeXenonBuffed == null">
+						<set_value name="player.entity.$LastTimeXenonBuffed" exact="player.age"/>
+						<debug_text text="'XenonBuff - Setting time counter for first time'"/>
+					</do_if>
+					<debug_text text="'XenonBuff - Checking for timer triggers'"/>
+					<do_if value="player.age ge (@player.entity.$LastTimeXenonBuffed + @player.entity.$XenonBuffedDelta)">
+						<do_if value="@global.$XenonBuff.$HoldSectors.$Enabled">
+							<debug_text text="'XenonBuff - Start xenon Buffing procedures'"/>
+							<include_actions ref="XenonBuffSetTimers"/>
+							<!-- Refill Xenon Stations storage -->
+							<find_station name="$XenonStations" multiple="true" space="player.galaxy" functional="true">
+								<match_any>
+									<!--Target shipbuilding stations-->
+									<match_content class="class.buildmodule" />
+								</match_any>
+								<!-- Xenon owned -->
+								<match owner="faction.xenon"/>
+							</find_station>
+							<do_all exact="$XenonStations.count" counter="$i">
+								<set_value name="$XenonStation" exact="$XenonStations.{$i}"/>
+								<include_actions ref="XenonBuffAddWares"/>
+							</do_all>
+							<remove_value name="$XenonStations"/>
+							<remove_value name="$XenonStation"/>
+							<include_actions ref="XenonBuffAddProtectors"/>
+						<!-- Add xenon protectors -->
+						</do_if>
+						<!-- Add xenon invader fleets -->
+						<do_if value="@global.$XenonBuff.$Invasion.$Enabled">
+							<do_if value="@player.entity.$XenonBuffedInvasion == 0">
+								<set_value name="player.entity.$XenonBuffedInvasion" exact="1"/>
+								<run_actions ref="XenonBuffSetInvasionOrigin" result="$InvadingSector"/>
+								<run_actions ref="XenonBuffSetInvaderFleetTarget" result="$targets"/>
+								<set_value name="$InvasionTarget" exact="$targets.{1}"/>
+								<set_value name="$InvasionOtherTargets" exact="$targets.{2}"/>
+								<!-- Create a notification -->
+								<show_help custom="'Deep space probes has detected an enemy fleet signature heading towards ' + $InvadingSector.name + '. It will arrive whitin minutes.'" log="false" position="1" force="true" duration="8s" comment="Invaders Triggered"/>
+								<set_value name="$Header" exact="'\033R Early Warning System : Invasion Fleet Detected'"/>
+								<set_value name="$Body" exact="'Commander, deep space probes has detected an enemy fleet signature heading towards \033G' + $InvadingSector.name + '\033W. It will arrive whitin minutes.'"/>
+								<write_to_logbook title="$Header" text="$Body" category="alerts"/>
+								<signal_cue_instantly cue="XenonBuffAddInvaderFleet" param="[$InvadingSector, $InvasionTarget, $InvasionOtherTargets]" />
+							</do_if>
+						</do_if>
 					</do_if>
 				</do_if>
 			</actions>
 		</cue>
 
-		<library name="AddTest">
+		<library name="XenonBuffAddTest">
 			<actions>
 				<find_sector name="$Target" macro="macro.cluster_413_sector001_macro"/>
 			</actions>
 		</library>
 
 		<!-- Notify player and add mission to destroy the invasion fleet -->
-		<library name="NotifyAndAddMission" purpose="run_actions">
+		<library name="XenonBuffNotifyAndAddMission" purpose="run_actions">
 			<params>
 				<param name="AttackWave"/>
 				<param name="InvasionTarget"/>
@@ -90,16 +101,16 @@
 				<param name="InvadingSector"/>
 			</params>
 			<actions>
-				<debug_text text="'xenonBuff - init notification and mission'"/>
+				<debug_text text="'XenonBuff - init notification and mission'"/>
 				<set_value name="$Header" exact="'\033R Early Warning System : Invasion Fleet Detected'"/>
 				<set_value name="$Body" exact="'Commander, huge enemy fleet signature has being detected.\nTheir primary target seems to be \033G' + $InvasionTarget.name +'\033W but they surely wont stop there.'"/>
 				<show_help custom="'!ALERT! Enemy fleet has emerged in ' + $InvadingSector.name" log="false" position="1" force="true" duration="8s" comment="Invaders Spawned"/>
 				<write_to_logbook title="$Header" text="$Body" interaction="showonmap" object="$InvaderShip" category="alerts"/>
-				<debug_text text="'xenonBuff - notification added :' + $Body"/>
-				<signal_cue_instantly cue="Kill_invasion_fleet" param="[$AttackWave, $InvasionTarget, $InvadingSector, $InvaderShip]"/>
+				<debug_text text="'XenonBuff - notification added :' + $Body"/>
+				<signal_cue_instantly cue="XenonBuffMissionEliminateInvaders" param="[$AttackWave, $InvasionTarget, $InvadingSector, $InvaderShip]"/>
 				<set_value name="player.entity.$XenonBuffedInvasion" exact="1"/>
-				<debug_text text="'xenonBuff - Setting New Invasion Status ' + @player.entity.$XenonBuffedInvasion"/>
-				<debug_text text="'xenonBuff - mission created'"/>
+				<debug_text text="'XenonBuff - Setting New Invasion Status ' + @player.entity.$XenonBuffedInvasion"/>
+				<debug_text text="'XenonBuff - mission created'"/>
 				<remove_value name="$Header"/>
 				<remove_value name="$Body"/>
 			</actions>
@@ -109,19 +120,19 @@
 		<!-- Defining Fleet Power
 			//TODO: Calculate power based on players fleet power (make fleet with variable strength)
 		-->
-		<library name="CalculateInvaderFleetPower" purpose="run_actions">
+		<library name="XenonBuffCalculateInvaderFleetPower" purpose="run_actions">
 			<actions>
 				<set_value name="$CarrierCount" min="1" max="3"/>
 				<set_value name="$DestroyerCount" min="1" max="3"/>
 				<set_value name="$FrigateCount" min="2" max="5"/>
-				<set_value name="$FigtherCount" min="1" max="3"/>
-				<debug_text text="'xenonBuff - invasion power calculated'"/>
-				<return value="[$CarrierCount, $DestroyerCount,$FrigateCount, $FigtherCount]" />
+				<set_value name="$FighterCount" min="1" max="3"/>
+				<debug_text text="'XenonBuff - invasion power calculated'"/>
+				<return value="[$CarrierCount, $DestroyerCount,$FrigateCount, $FighterCount]" />
 			</actions>
 		</library>
 
 		<!-- Defining Fleet Target -->
-		<library name="SetInvaderFleetTarget" purpose="run_actions">
+		<library name="XenonBuffSetInvaderFleetTarget" purpose="run_actions">
 			<actions>
 				<find_station name="$TargetStations" multiple="true" space="player.galaxy" functional="true">
 					<match_content class="class.buildmodule" />
@@ -134,12 +145,12 @@
 				<do_else>
 					<return value="[]" />
 				</do_else>
-				<debug_text text="'xenonBuff - invasion target lock: ' + $InvasionTarget.name"/>
+				<debug_text text="'XenonBuff - invasion target lock: ' + $InvasionTarget.name"/>
 			</actions>
 		</library>
 
 		<!-- Defining Fleet -->
-		<library name="CreateXenonInvaderFleet" purpose="run_actions">
+		<library name="XenonBuffCreateXenonInvaderFleet" purpose="run_actions">
 			<params>
 				<param name="InvadingSector"/>
 				<param name="InvasionTarget"/>
@@ -147,10 +158,10 @@
 				<param name="DestroyerCount"/>
 				<param name="CarrierCount"/>
 				<param name="FrigateCount"/>
-				<param name="FigtherCount"/>
+				<param name="FighterCount"/>
 			</params>
 			<actions>
-				<debug_text text="'xenonBuff - Processing for Xenon invader fleet on: ' + $InvadingSector.name"/>
+				<debug_text text="'XenonBuff - Processing for Xenon invader fleet on: ' + $InvadingSector.name"/>
 				<set_value name="$InvaderShip" exact="null"/>
 				<set_value name="$InvadingSectorCenter" exact="$InvadingSector.coreposition"/>
 				<get_suitable_job result="$InvaderShipJob" faction="faction.xenon" size="class.ship_xl" tags="[tag.invader]"/>
@@ -161,7 +172,7 @@
 						  <safepos x="$InvadingSectorCenter.x" y="$InvadingSectorCenter.y" z="$InvadingSectorCenter.z" radius="60km" min="60km" max="900km"/>
 						</spawn_waiting_job_ship>
 						<do_if value="$InvaderShip.exists">
-						  <debug_text text="'xenonBuff - Processing for invader fleet:' + $InvadingSector.name + ': ship created'"/>
+						  <debug_text text="'XenonBuff - Processing for invader fleet:' + $InvadingSector.name + ': ship created'"/>
 						  <activate_waiting_job_ship ship="$InvaderShip"/>
 						</do_if>
 						<do_else>
@@ -170,7 +181,7 @@
 						</do_else>
 					</do_if>
 					<do_else>
-						<debug_text text="'xenonBuff - Invader fleet already exists somehow.'"/>
+						<debug_text text="'XenonBuff - Invader fleet already exists somehow.'"/>
 					</do_else>
 					<do_if value="$InvaderShip">
 						<add_to_group groupname="$AttackWave" object="$InvaderShip"/>
@@ -214,7 +225,7 @@
 									  <param name="assignment" value="[assignment.attack, assignment.defence].random"/>
 									  <param name="cancelorders" value="true"/>
 									</create_order>
-									<do_all exact="$FigtherCount" counter="$l">
+									<do_all exact="$FighterCount" counter="$l">
 										<create_ship name="$shipSmall" macro="[macro.ship_xen_s_fighter_02_a_macro, macro.ship_xen_s_fighter_01_a_macro].random" sector="$InvadingSector">
 											<owner exact="faction.xenon"/>
 											<loadout>
@@ -288,7 +299,7 @@
 									  <param name="assignment" value="[assignment.attack, assignment.interception, assignment.defence].random"/>
 									  <param name="cancelorders" value="true"/>
 									</create_order>
-									<do_all exact="$FigtherCount" counter="$l">
+									<do_all exact="$FighterCount" counter="$l">
 										<create_ship name="$shipSmall" macro="[macro.ship_xen_s_fighter_02_a_macro, macro.ship_xen_s_fighter_01_a_macro].random" sector="$InvadingSector">
 											<owner exact="faction.xenon"/>
 											<loadout>
@@ -324,7 +335,7 @@
 			</actions>
 		</library>
 
-		<library name="CreateKhaakInvaderFleet" purpose="run_actions">
+		<library name="XenonBuffCreateKhaakInvaderFleet" purpose="run_actions">
 			<params>
 				<param name="InvadingSector"/>
 				<param name="InvasionTarget"/>
@@ -332,10 +343,10 @@
 				<param name="DestroyerCount"/>
 				<param name="CarrierCount"/>
 				<param name="FrigateCount"/>
-				<param name="FigtherCount"/>
+				<param name="FighterCount"/>
 			</params>
 			<actions>
-				<debug_text text="'xenonBuff - Processing for Khaak invader fleet on: ' + $InvadingSector.name"/>
+				<debug_text text="'XenonBuff - Processing for Khaak invader fleet on: ' + $InvadingSector.name"/>
 
 				<set_value name="$InvaderShip" exact="null"/>
 				<set_value name="$InvadingSectorCenter" exact="$InvadingSector.coreposition"/>
@@ -351,7 +362,7 @@
 				</create_ship>
 
 				<do_if value="$InvaderShip == null">
-					<debug_text text="'xenonBuff - Khaak leader is a M ship '"/>
+					<debug_text text="'XenonBuff - Khaak leader is a M ship '"/>
 					<create_ship name="$InvaderShip" sector="$InvadingSector" capturable="false">
 					  <select faction="faction.khaak" size="class.ship_m"/>
 					  <owner exact="faction.khaak"/>
@@ -385,7 +396,7 @@
 						  <param name="pursuedistance" value="15km"/>
 						</create_order>
 						<add_to_group groupname="$AttackWave" object="$shipMEscort"/>
-						<set_value name="$scount" exact="($FrigateCount) + ($FigtherCount)"/>
+						<set_value name="$scount" exact="($FrigateCount) + ($FighterCount)"/>
 						<do_all exact="$scount" counter="$j">
 							<create_ship name="$shipSEscort" sector="$InvadingSector" capturable="false">
 							  <select faction="faction.khaak" size="class.ship_s"/>
@@ -410,7 +421,7 @@
 		</library>
 
 		<!-- Defining Fleet -->
-		<library name="CreateRegularInvaderFleet" purpose="run_actions">
+		<library name="XenonBuffCreateRegularInvaderFleet" purpose="run_actions">
 			<params>
 				<param name="InvadingSector"/>
 				<param name="InvasionTarget"/>
@@ -418,17 +429,17 @@
 				<param name="DestroyerCount"/>
 				<param name="CarrierCount"/>
 				<param name="FrigateCount"/>
-				<param name="FigtherCount"/>
+				<param name="FighterCount"/>
 			</params>
 			<actions>
 				<set_value name="$shipNames" exact="['Halo','Galatea','Gladius','Karnack','Star Talon','Phoenix','Vespira','Cordoba','Enterprise','Defiance','Rebellion','Majestic','Conquistador','Vanquisher','Providence','Independence','Arcadian','The Watcher','Gallimimus','Shade','The Gladiator','Xerxes','Nostradamus','Phalanx','Praetor','Stalker','Claymore','Valhala','Arrow Flight','Euphoria','Apocalypse','Harlequin','Scythe','Nightfall','Duke','Saber','Caelestis','Blade']" />
 
-				<debug_text text="'xenonBuff - Processing for regular invader fleet on: ' + $InvadingSector.name"/>
-				<debug_text text="'xenonBuff - invader ships names:' + $shipNames"/>
-				<debug_text text="'xenonBuff - invader fleet destroyer:' + $DestroyerCount"/>
-				<debug_text text="'xenonBuff - invader fleet carrier:' + $CarrierCount"/>
-				<debug_text text="'xenonBuff - invader fleet frigate:' + $FrigateCount"/>
-				<debug_text text="'xenonBuff - invader fleet figther:' + $FigtherCount"/>
+				<debug_text text="'XenonBuff - Processing for regular invader fleet on: ' + $InvadingSector.name"/>
+				<debug_text text="'XenonBuff - invader ships names:' + $shipNames"/>
+				<debug_text text="'XenonBuff - invader fleet destroyer:' + $DestroyerCount"/>
+				<debug_text text="'XenonBuff - invader fleet carrier:' + $CarrierCount"/>
+				<debug_text text="'XenonBuff - invader fleet frigate:' + $FrigateCount"/>
+				<debug_text text="'XenonBuff - invader fleet figther:' + $FighterCount"/>
 
 				<set_value name="$InvaderShip" exact="null"/>
 				<set_value name="$InvadingSectorCenter" exact="$InvadingSector.coreposition"/>
@@ -589,7 +600,7 @@
 						  <param name="assignment" value="[assignment.attack, assignment.defence].random"/>
 						  <param name="cancelorders" value="true"/>
 						</create_order>
-						<debug_text text="'xenonBuff - destroyer created:' + $shipDestroEscort"/>
+						<debug_text text="'XenonBuff - destroyer created:' + $shipDestroEscort"/>
 						<add_to_group groupname="$AttackWave" object="$shipDestroEscort"/>
 						<do_all exact="$FrigateCount" counter="$k">
 							<do_any>
@@ -630,8 +641,8 @@
 							  <param name="assignment" value="[assignment.attack, assignment.defence].random"/>
 							  <param name="cancelorders" value="true"/>
 							</create_order>
-							<debug_text text="'xenonBuff - frigate created:' + $shipFrig"/>
-							<do_all exact="$FigtherCount" counter="$l">
+							<debug_text text="'XenonBuff - frigate created:' + $shipFrig"/>
+							<do_all exact="$FighterCount" counter="$l">
 								<do_any>
 									<set_value name="$fleetShipMacro" exact="macro.ship_ter_s_heavyfighter_01_a_macro" />
 									<set_value name="$fleetShipMacro" exact="macro.ship_spl_s_heavyfighter_01_a_macro" />
@@ -683,7 +694,7 @@
 								  <param name="assignment" value="[assignment.attack, assignment.defence].random"/>
 								  <param name="cancelorders" value="true"/>
 								</create_order>
-								<debug_text text="'xenonBuff - figther created:' + $shipSmall"/>
+								<debug_text text="'XenonBuff - figther created:' + $shipSmall"/>
 								<add_to_group groupname="$AttackWave" object="$shipSmall"/>
 								<remove_value name="$shipSmall"/>
 							</do_all>
@@ -729,7 +740,7 @@
 						  <param name="assignment" value="[assignment.attack, assignment.defence].random"/>
 						  <param name="cancelorders" value="true"/>
 						</create_order>
-						<debug_text text="'xenonBuff - carrier created:' + $shipCarrier"/>
+						<debug_text text="'XenonBuff - carrier created:' + $shipCarrier"/>
 						<!-- Add subordinates -->
 						<do_all exact="$DestroyerCount" counter="$j">
 							<do_any>
@@ -784,7 +795,7 @@
 							  <param name="assignment" value="[assignment.attack, assignment.defence].random"/>
 							  <param name="cancelorders" value="true"/>
 							</create_order>
-							<debug_text text="'xenonBuff - destroyer created:' + $shipDestro"/>
+							<debug_text text="'XenonBuff - destroyer created:' + $shipDestro"/>
 							<add_to_group groupname="$AttackWave" object="$shipDestro"/>
 							<remove_value name="$shipDestro"/>
 						</do_all>
@@ -831,12 +842,12 @@
 							  <param name="assignment" value="[assignment.attack, assignment.interception, assignment.defence].random"/>
 							  <param name="cancelorders" value="true"/>
 							</create_order>
-							<debug_text text="'xenonBuff - frigate created:' + $shipFrig"/>
+							<debug_text text="'XenonBuff - frigate created:' + $shipFrig"/>
 							<add_to_group groupname="$AttackWave" object="$shipFrig"/>
 							<remove_value name="$shipFrig"/>
 						</do_all>
 						<remove_value name="$escortCount"/>
-						<set_value name="$escortCount" exact="$FigtherCount * 2"/>
+						<set_value name="$escortCount" exact="$FighterCount * 2"/>
 						<do_if value="$DestroyerCount ge 1">
 							<set_value name="$escortCount" exact="$DestroyerCount * $escortCount"/>
 						</do_if>
@@ -895,7 +906,7 @@
 							  <param name="assignment" value="[assignment.attack, assignment.interception, assignment.defence].random"/>
 							  <param name="cancelorders" value="true"/>
 							</create_order>
-							<debug_text text="'xenonBuff - figther created:' + $shipSmall"/>
+							<debug_text text="'XenonBuff - figther created:' + $shipSmall"/>
 							<add_to_group groupname="$AttackWave" object="$shipSmall"/>
 							<remove_value name="$shipSmall"/>
 						</do_all>
@@ -910,7 +921,7 @@
 			</actions>
 		</library>
 
-		<library name="SetInvasionOrigin" purpose="run_actions">
+		<library name="XenonBuffSetInvasionOrigin" purpose="run_actions">
 			<actions>
 				<set_value name="$InvasionOrigin" exact="[macro.cluster_44_sector001_macro, macro.cluster_45_sector001_macro, macro.cluster_49_sector001_macro,
 				macro.cluster_31_sector001_macro, macro.cluster_48_sector001_macro, macro.cluster_43_sector001_macro, macro.cluster_50_sector001_macro,
@@ -918,83 +929,84 @@
 				macro.cluster_39_sector001_macro, macro.cluster_408_sector001_macro, macro.cluster_46_sector001_macro
 				]"/>
 				<find_sector name="$XenonSectors" macro="$InvasionOrigin" multiple="true"/>
-				<debug_text text="'xenonBuff - Origin set to :' + $XenonSectors.random.name"/>
+				<debug_text text="'XenonBuff - Origin set to :' + $XenonSectors.random.name"/>
 				<return value="$XenonSectors.random" />
 			</actions>
 		</library>
 
 		<!-- Add invasion fleet -->
-		<cue name="AddInvaderFleet" instantiate="true">
+		<cue name="XenonBuffAddInvaderFleet" instantiate="true">
 			<conditions>
 				<event_cue_signalled />
+				<check_value value="@global.$XenonBuff.$Invasion.$Enabled" exact="true"/>
 			</conditions>
 			<delay min="20min" max="35min"/>
 			<actions>
 				<set_value name="$InvadingSector" exact="@event.param.{1}"/>
 				<set_value name="$InvasionTarget" exact="@event.param.{2}"/>
 				<set_value name="$InvasionOtherTargets" exact="@event.param.{3}"/>
-				<debug_text text="'xenonBuff - Processing for invader fleet:' + $InvadingSector.name"/>
+				<debug_text text="'XenonBuff - Processing for invader fleet:' + $InvadingSector.name"/>
 				<!-- Default Fleet Power -->
 				<set_value name="$CarrierCount" exact="0"/>
 				<set_value name="$DestroyerCount" exact="1"/>
 				<set_value name="$FrigateCount" exact="2"/>
-				<set_value name="$FigtherCount" exact="2"/>
+				<set_value name="$FighterCount" exact="2"/>
 				<!-- Calculate fleet power -->
-				<debug_text text="'xenonBuff - Calculating fleet power'"/>
-				<run_actions ref="CalculateInvaderFleetPower" result="$FleetPower"/>
-				<debug_text text="'xenonBuff - invader fleet power:' + $FleetPower"/>
+				<debug_text text="'XenonBuff - Calculating fleet power'"/>
+				<run_actions ref="XenonBuffCalculateInvaderFleetPower" result="$FleetPower"/>
+				<debug_text text="'XenonBuff - invader fleet power:' + $FleetPower"/>
 				<set_value name="$CarrierCount" exact="$FleetPower.{1}"/>
 				<set_value name="$DestroyerCount" exact="$FleetPower.{2}"/>
 				<set_value name="$FrigateCount" exact="$FleetPower.{3}"/>
-				<set_value name="$FigtherCount" exact="$FleetPower.{4}"/>
+				<set_value name="$FighterCount" exact="$FleetPower.{4}"/>
 				<!-- Creating the fleet -->
 				<set_value name="$fleetType" min="0" max="10"/>
-				<debug_text text="'xenonBuff - Setting fleet type:' + $fleetType"/>
-				<do_if value="$fleetType ge 11">
-					<run_actions ref="CreateKhaakInvaderFleet" result="$targets">
+				<debug_text text="'XenonBuff - Setting fleet type:' + $fleetType"/>
+				<do_if value="$fleetType ge 9 and @global.$XenonBuff.$Invasion.$KhaaksFleetEnabled">
+					<run_actions ref="XenonBuffCreateKhaakInvaderFleet" result="$targets">
 						<param name="InvadingSector" value="$InvadingSector"/>
 						<param name="InvasionTarget" value="$InvasionTarget"/>
 						<param name="InvasionOtherTargets" value="$InvasionOtherTargets"/>
 						<param name="DestroyerCount" value="$DestroyerCount"/>
 						<param name="CarrierCount" value="$CarrierCount"/>
 						<param name="FrigateCount" value="$FrigateCount"/>
-						<param name="FigtherCount" value="$FigtherCount"/>
+						<param name="FighterCount" value="$FighterCount"/>
 					</run_actions>
 				</do_if>
 				<do_else>
 					<do_if value="$fleetType ge 5">
-						<run_actions ref="CreateXenonInvaderFleet" result="$targets">
+						<run_actions ref="XenonBuffCreateXenonInvaderFleet" result="$targets">
 							<param name="InvadingSector" value="$InvadingSector"/>
 							<param name="InvasionTarget" value="$InvasionTarget"/>
 							<param name="InvasionOtherTargets" value="$InvasionOtherTargets"/>
 							<param name="DestroyerCount" value="$DestroyerCount"/>
 							<param name="CarrierCount" value="$CarrierCount"/>
 							<param name="FrigateCount" value="$FrigateCount"/>
-							<param name="FigtherCount" value="$FigtherCount"/>
+							<param name="FighterCount" value="$FighterCount"/>
 						</run_actions>
 					</do_if>
 					<do_else>
-						<run_actions ref="CreateRegularInvaderFleet" result="$targets">
+						<run_actions ref="XenonBuffCreateRegularInvaderFleet" result="$targets">
 							<param name="InvadingSector" value="$InvadingSector"/>
 							<param name="InvasionTarget" value="$InvasionTarget"/>
 							<param name="InvasionOtherTargets" value="$InvasionOtherTargets"/>
 							<param name="DestroyerCount" value="$DestroyerCount"/>
 							<param name="CarrierCount" value="$CarrierCount"/>
 							<param name="FrigateCount" value="$FrigateCount"/>
-							<param name="FigtherCount" value="$FigtherCount"/>
+							<param name="FighterCount" value="$FighterCount"/>
 						</run_actions>
 					</do_else>
 				</do_else>
 				<set_value name="$InvaderShip" exact="$targets.{1}"/>
 				<set_value name="$AttackWave" exact="$targets.{2}"/>
 
-				<debug_text text="'xenonBuff - AddFleet leader:' + $InvaderShip"/>
-				<debug_text text="'xenonBuff - AddFleet fleet:' + $AttackWave"/>
+				<debug_text text="'XenonBuff - AddFleet leader:' + $InvaderShip"/>
+				<debug_text text="'XenonBuff - AddFleet fleet:' + $AttackWave"/>
 
 				<!-- Add notification and mission only if the invasion fleet was successfully created -->
 				<do_if value="$InvaderShip">
-					<debug_text text="'xenonBuff - invader fleet group:' + $AttackWave"/>
-					<run_actions ref="NotifyAndAddMission">
+					<debug_text text="'XenonBuff - invader fleet group:' + $AttackWave"/>
+					<run_actions ref="XenonBuffNotifyAndAddMission">
 						<param name="AttackWave" value="$AttackWave"/>
 						<param name="InvasionTarget" value="$InvasionTarget"/>
 						<param name="InvaderShip" value="$InvaderShip"/>
@@ -1014,15 +1026,15 @@
 				<remove_value name="$CarrierCount"/>
 				<remove_value name="$DestroyerCount"/>
 				<remove_value name="$FrigateCount"/>
-				<remove_value name="$FigtherCount"/>
+				<remove_value name="$FighterCount"/>
 				<remove_value name="$XenonSectors"/>
 				<remove_value name="$XenonHomes"/>
-				<reset_cue cue="AddInvaderFleet"/>
+				<reset_cue cue="XenonBuffAddInvaderFleet"/>
 			</actions>
 		</cue>
 
 		<!-- Add xenon home sectors protection fleets -->
-		<library name="AddProtectors">
+		<library name="XenonBuffAddProtectors">
 			<actions>
 				<set_value name="$XenonHomes" exact="[macro.cluster_17_sector001_macro, macro.cluster_21_sector001_macro, macro.cluster_21_sector002_macro, macro.cluster_26_sector001_macro, macro.cluster_414_sector001_macro, macro.cluster_413_sector001_macro, macro.cluster_33_sector001_macro, macro.cluster_424_sector001_macro, macro.cluster_424_sector002_macro, macro.cluster_415_sector001_macro, macro.cluster_112_sector001_macro, macro.cluster_32_sector001_macro, macro.cluster_32_sector002_macro, macro.cluster_708_sector001_macro]"/>
 				<find_sector name="$XenonSectors" macro="$XenonHomes" multiple="true"/>
@@ -1042,14 +1054,14 @@
 
 					 <set_value name="$OwnedSector" exact="true"/>
 					 <do_if value="$OwnedSector">
-						<debug_text text="'xenonBuff - Processing for protector fleet:' + $Sector.name"/>
+						<debug_text text="'XenonBuff - Processing for protector fleet:' + $Sector.name"/>
 						<set_value name="$SectorCentre" exact="$Sector.coreposition"/>
 						<!-- Add miners and transport for rebuild -->
 						<get_suitable_job result="$MinerJob" faction="faction.xenon" size="class.ship_m" tags="[tag.miner]"/>
 						<get_suitable_job result="$TraderJob" faction="faction.xenon" size="class.ship_m" tags="[tag.freighter]"/>
 
-						<debug_text text="'xenonBuff - Xenon Trader Job:' + $MinerJob"/>
-						<debug_text text="'xenonBuff - Xenon Miner Job:' + $TraderJob"/>
+						<debug_text text="'XenonBuff - Xenon Trader Job:' + $MinerJob"/>
+						<debug_text text="'XenonBuff - Xenon Miner Job:' + $TraderJob"/>
 
 						<do_all exact="4" counter="$mj">
 							<request_job_ship name="$newMiner" job="$MinerJob" requester="$Sector"/>
@@ -1061,7 +1073,7 @@
 									<activate_waiting_job_ship ship="$newMiner"/>
 									<add_cargo object="$newMiner" ware="ware.silicon" min="400" max="450" />
 									<add_cargo object="$newMiner" ware="ware.ore" min="400" max="450" />
-									<debug_text text="'xenonBuff - Xenon Miner Activated:' + $newMiner"/>
+									<debug_text text="'XenonBuff - Xenon Miner Activated:' + $newMiner"/>
 								</do_if>
 							</do_if>
 						</do_all>
@@ -1074,7 +1086,7 @@
 								<do_if value="$newTrader.exists">
 									<activate_waiting_job_ship ship="$newTrader"/>
 									<add_cargo object="$newTrader" ware="ware.energycells" min="5000" max="9000" />
-									<debug_text text="'xenonBuff - Xenon Trader Activated:' + $newTrader"/>
+									<debug_text text="'XenonBuff - Xenon Trader Activated:' + $newTrader"/>
 								</do_if>
 							</do_if>
 						</do_all>
@@ -1085,10 +1097,10 @@
 						<!-- Spawn military ships -->
 						<find_ship_by_true_owner name="$protectors" faction="faction.xenon" commandeerable="true" class="[class.ship_xl]" primarypurpose="purpose.fight" multiple="true" jobtags="[tag.protector]" space="$Sector"/>
 						<do_if value="$protectors.count le 0">
-							<debug_text text="'xenonBuff - Processing for protector fleet:' + $Sector.name + ': No ship found'"/>
+							<debug_text text="'XenonBuff - Processing for protector fleet:' + $Sector.name + ': No ship found'"/>
 							<get_suitable_job result="$ShipJob" faction="faction.xenon" size="class.ship_xl" tags="[tag.protector]"/>
 							<set_value name="$NewShip" exact="null"/>
-							<debug_text text="'xenonBuff - Processing for protector fleet - job:' + $ShipJob"/>
+							<debug_text text="'XenonBuff - Processing for protector fleet - job:' + $ShipJob"/>
 							<do_if value="$ShipJob">
 								<request_job_ship name="$NewShip" job="$ShipJob" requester="$Sector"/>
 								<do_if value="$NewShip">
@@ -1096,7 +1108,7 @@
 									  <safepos x="$SectorCentre.x" y="$SectorCentre.y" z="$SectorCentre.z" radius="80km" min="80km" max="80km"/>
 									</spawn_waiting_job_ship>
 									<do_if value="$NewShip.exists">
-									  <debug_text text="'xenonBuff - Processing for protector fleet:' + $Sector.name + ': ship created'"/>
+									  <debug_text text="'XenonBuff - Processing for protector fleet:' + $Sector.name + ': ship created'"/>
 									  <set_value name="$notificationlist" operation="add" exact="'\n ' + $Sector.name" />
 									  <activate_waiting_job_ship ship="$NewShip"/>
 									  <!-- Adding some immediate escort for the Xenon Protector I -->
@@ -1161,20 +1173,20 @@
 		</library>
 
 		<!-- Set timers for next Xenon Buff -->
-		<library name="SetTimers">
+		<library name="XenonBuffSetTimers">
 			<actions>
 				<set_value name="player.entity.$XenonBuffedDelta" min="3h" max="5h"/>
 				<set_value name="player.entity.$LastTimeXenonBuffed" exact="player.age"/>
-				<debug_text text="'xenonBuff delta:' + player.entity.$XenonBuffedDelta"/>
-				<debug_text text="'xenonBuff time:' + player.entity.$LastTimeXenonBuffed"/>
+				<debug_text text="'XenonBuff delta:' + player.entity.$XenonBuffedDelta"/>
+				<debug_text text="'XenonBuff time:' + player.entity.$LastTimeXenonBuffed"/>
 			</actions>
 		</library>
 
 		<!-- Add wares to Xenon station to refill its storage -->
-		<library name="AddWares">
+		<library name="XenonBuffAddWares">
 			<actions>
 				<do_if value="$XenonStation.exists">
-					<debug_text text="'xenonBuff on :' + $XenonStation.name"/>
+					<debug_text text="'XenonBuff on :' + $XenonStation.name"/>
 					<set_value name="$needwares" exact="0" />
 
 					<do_all exact="$XenonStation.cargo.list.count" counter="$j">
@@ -1185,7 +1197,7 @@
 						<set_value name="$needwares" operation="add" exact="1"/>
 						<set_value name="$needed" exact="($maxWaresAmount-$waresAmount)"/>
 						<add_cargo object="$XenonStation" ware="$ware" exact="$needed"/>
-						<debug_text text="'xenonBuff Completed :' + $XenonStation.name + ' added ' + $needed + ' of ' + $ware"/>
+						<debug_text text="'XenonBuff Completed :' + $XenonStation.name + ' added ' + $needed + ' of ' + $ware"/>
 					</do_all>
 
 					<remove_value name="$ware"/>
@@ -1196,14 +1208,14 @@
 			</actions>
 		</library>
 
-		<library name="AddAllyFleet" purpose="run_actions">
+		<library name="XenonBuffAddAllyFleet" purpose="run_actions">
 			<params>
 				<param name="Target"/>
 				<param name="OtherTarget"/>
 			</params>
 			<actions>
 				<set_value name="$shipNames" exact="['Dragonstar','Apocalypse','Vulture','Zenith','Skullwarrior','The Paladin','Death','The Commissioner','Covenant','Elysium','Rebellious']"/>
-				<debug_text text="'xenonBuff - adding allies to attack ' + $Target + ' and ' + $OtherTarget"/>
+				<debug_text text="'XenonBuff - adding allies to attack ' + $Target + ' and ' + $OtherTarget"/>
 				<do_any>
 					<do_all>
 						<set_value name="$FleetLeaderMacro" exact="macro.ship_spl_l_destroyer_01_a_macro" />
@@ -1227,7 +1239,7 @@
 					</do_all>
 				</do_any>
 				<create_ship name="$fleetLeader" macro="$FleetLeaderMacro" sector="player.sector">
-					<owner exact="faction.invasionally"/>
+					<owner exact="faction.xenoninvasionresistance"/>
 					<loadout>
 					  <level min="0.8" max="1"/>
 					</loadout>
@@ -1254,7 +1266,7 @@
 				  <position value="$fleetLeader.position"/>
 				  <rotation value="$fleetLeader.rotation"/>
 				</add_effect>
-				<debug_text text="'xenonBuff - ally fleet leader ' + $fleetLeader"/>
+				<debug_text text="'XenonBuff - ally fleet leader ' + $fleetLeader"/>
 				<set_skill entity="$fleetLeader.pilot" type="skilltype.piloting" exact="10" />
 				<set_skill entity="$fleetLeader.pilot" type="skilltype.engineering" exact="5" />
 				<create_order id="'Attack'" object="$fleetLeader" immediate="true" override="true">
@@ -1283,7 +1295,7 @@
 						<set_value name="$fleetShipMacro" exact="macro.ship_tel_s_fighter_01_a_macro" />
 					</do_any>
 					<create_ship name="$fleetShip" macro="$fleetShipMacro" sector="player.sector">
-						<owner exact="faction.invasionally"/>
+						<owner exact="faction.xenoninvasionresistance"/>
 						<loadout>
 						  <level min="0.6" max="0.8"/>
 						</loadout>
@@ -1323,7 +1335,7 @@
 
 
 		<!-- Kill Fleet Mission -->
-		<cue name="Kill_invasion_fleet">
+		<cue name="XenonBuffMissionEliminateInvaders">
 			<conditions>
 				<event_cue_signalled />
 			</conditions>
@@ -1361,7 +1373,7 @@
 				</speak>
 			</actions>
 			<cues>
-				<cue name="Invasion_fleet_engage_event">
+				<cue name="XenonBuffMissionEliminateInvadersEngageEvent">
 					<conditions>
 						<check_any>
 							<event_object_changed_zone object="player.entity" />
@@ -1376,17 +1388,17 @@
 						<set_value name="$AllyLeader" exact="null"/>
 						<do_if value="$AllyFleetSummoned != 1">
 							<set_value name="$AllyFleetSummoned" exact="1"/>
-							<run_actions ref="AddAllyFleet" result="$AllyFleet">
+							<run_actions ref="XenonBuffAddAllyFleet" result="$AllyFleet">
 								<param name="Target" value="$InvaderShip"/>
 								<param name="OtherTarget" value="$InvaderWave"/>
 							</run_actions>
 							<set_value name="$AllyLeader" exact="$AllyFleet.{1}"/>
 							<show_help custom="'Several factions put their differences aside and send us some aid. We are not alone in this fight.'" log="true" position="2" force="true" duration="7s"/>
-							<signal_cue_instantly cue="AllyFleetLeaderSpeak"/>
+							<signal_cue_instantly cue="XenonBuffMissionEliminateInvadersAllyFleetLeaderSpeak"/>
 						</do_if>
 					</actions>
 					<cues>
-						<cue name="AllyFleetLeaderSpeak" instantiate="true">
+						<cue name="XenonBuffMissionEliminateInvadersAllyFleetLeaderSpeak" instantiate="true">
 							<conditions>
 								<event_cue_signalled />
 							</conditions>
@@ -1405,23 +1417,23 @@
 						</cue>
 					</cues>
                 </cue>
-				<cue name="Invasion_fleet_invade_sector">
+				<cue name="XenonBuffMissionEliminateInvadersLeaderChangedSector">
 					<conditions>
 						<event_object_changed_sector object="$InvaderShip"/>
 					</conditions>
 					<delay exact="2s"/>
 					<actions>
-						<debug_text text="'xenonBuff - invader fleet leader changing sector ' + $InvaderShip"/>
+						<debug_text text="'XenonBuff - invader fleet leader changing sector ' + $InvaderShip"/>
 						<find_sector_in_range name="$sectorInAlert" object="$InvaderShip" maxdistance="0" multiple="false"/>
-						<debug_text text="'xenonBuff - invader fleet flying over:' + $sectorInAlert.name + '. Teleporting fleet'"/>
+						<debug_text text="'XenonBuff - invader fleet flying over:' + $sectorInAlert.name + '. Teleporting fleet'"/>
 						<!-- teleport fleet subordinates to Fleet Leader -->
-						<!-- <debug_text text="'xenonBuff - invader fleet to be teleported: ' + $InvaderWave"/> -->
+						<!-- <debug_text text="'XenonBuff - invader fleet to be teleported: ' + $InvaderWave"/> -->
 						<do_all exact="$InvaderWave.count" counter="$i">
 							<do_if value="$InvaderWave.{$i}.name != $InvaderShip.name">
 								<warp object="$InvaderWave.{$i}" zone="$InvaderShip.zone">
 									<position object="$InvaderShip" min="1km" max="4km"/>
 								</warp>
-								<!-- <debug_text text="'xenonBuff - invader fleet - ' + $InvaderWave.{$i}.name + ' teleported'" /> -->
+								<!-- <debug_text text="'XenonBuff - invader fleet - ' + $InvaderWave.{$i}.name + ' teleported'" /> -->
 								<add_effect object="$InvaderWave.{$i}.zone" effect="'jump_jumpin_capship'">
 								  <position value="$InvaderWave.{$i}.position"/>
 								  <rotation value="$InvaderWave.{$i}.rotation"/>
@@ -1436,10 +1448,10 @@
 							<show_notification text="$alert" sound="notification_warning" comment="Invasion Fleet changed sector" />
 							<write_to_logbook text="$alert" category="general" title="ALERT" interaction="showonmap" object="$InvaderShip" comment="Invasion Fleet changed sector" />
 						</do_if>
-						<reset_cue cue="Invasion_fleet_invade_sector"/>
+						<reset_cue cue="XenonBuffMissionEliminateInvadersLeaderChangedSector"/>
 					</actions>
                 </cue>
-				<cue name="Invasion_leader_destroyed">
+				<cue name="XenonBuffMissionEliminateInvadersLeaderDestroyed">
 					<conditions>
 						<event_object_destroyed object="$InvaderShip"/>
 					</conditions>
@@ -1455,7 +1467,7 @@
 						</do_all>
 					</actions>
 				</cue>
-				<cue name="Invasion_fleet_destroyed">
+				<cue name="XenonBuffMissionEliminateInvadersInvasionFleetDestroyed">
 					<conditions>
 						<event_object_destroyed group="$InvaderWave"/>
 						<check_value value="$InvaderWave.count == 1"/>
@@ -1471,7 +1483,7 @@
 							</do_all>
 							<destroy_group group="$AllyFleet" explosion="false"/>
 						</do_if>
-						<signal_cue_instantly cue="MissionFinishSpeak"/>
+						<signal_cue_instantly cue="XenonBuffMissionEliminateInvadersMissionFinishSpeak"/>
 
 						<show_help custom="'Invasion Fleet has being defeated.'" log="false" position="2" force="true" duration="7s" comment="Mission accomplished"/>
 						<set_value name="$Header" exact="'\033G Invasion Fleet Defeated'"/>
@@ -1488,10 +1500,10 @@
 								<show_notification text="$RewardText" sound="notification_achievement" comment="Items received" />
 							</do_if>
 						</do_if>
-						<reset_cue cue="Kill_invasion_fleet"/>
+						<reset_cue cue="XenonBuffMissionEliminateInvaders"/>
 					</actions>
 					<cues>
-						<cue name="MissionFinishSpeak" instantiate="true">
+						<cue name="XenonBuffMissionEliminateInvadersMissionFinishSpeak" instantiate="true">
 							<conditions>
 								<event_cue_signalled />
 							</conditions>

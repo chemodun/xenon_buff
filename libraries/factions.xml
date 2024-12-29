@@ -1,92 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<factions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="factions.xsd">
-  <faction id="invasionally" name="Gate Network Defenders" description="Gate Network Defenders Joint Force" shortname="DEF" prefixname="GND" behaviourset="default" known="1" tags="protective" policefaction="player">
-    <color r="155" g="255" b="155" />
-    <icon active="faction_visitor" inactive="faction_visitor" />
-	<licences>
-		<licence type="capitalequipment" factions="paranid teladi argon trinity buccaneers terran split holyorder pioneers freesplit court" />
-		<licence type="generaluseequipment" factions="paranid teladi argon trinity buccaneers terran split holyorder pioneers freesplit court" />
-		<licence type="militaryequipment" factions="paranid teladi argon trinity buccaneers terran split holyorder pioneers freesplit court" />
-		<licence type="capitalship" factions="paranid teladi argon trinity buccaneers terran split holyorder pioneers freesplit court" />
-		<licence type="generaluseship" factions="paranid teladi argon trinity buccaneers terran split holyorder pioneers freesplit court" />
-		<licence type="militaryship" factions="paranid teladi argon trinity buccaneers terran split holyorder pioneers freesplit court" />
-	</licences>
-    <relations locked="1">	
-      <relation faction="player" relation="1" />
-      <relation faction="khaak" relation="-1" />
-      <relation faction="alliance" relation="1" />
-      <relation faction="antigone" relation="1" />
-      <relation faction="argon" relation="1" />
-      <relation faction="buccaneers" relation="1" />
-      <relation faction="civilian" relation="1" />
-      <relation faction="hatikvah" relation="1" />
-      <relation faction="holyorder" relation="1" />
-      <relation faction="holyorderfanatic" relation="1" />
-      <relation faction="ministry" relation="1" />
-      <relation faction="paranid" relation="1" />
-      <relation faction="scaleplate" relation="1" />
-      <relation faction="smuggler" relation="1" />
-      <relation faction="teladi" relation="1" />
-      <relation faction="trinity" relation="1" />
-      <relation faction="visitor" relation="1" />
-      <relation faction="xenon" relation="-1" />
-	  <relation faction="fallensplit" relation="1" />
-	  <relation faction="freesplit" relation="1" />
-	  <relation faction="split" relation="1" />
-	  <relation faction="pioneers" relation="1" />
-	  <relation faction="terran" relation="1" />
-	  <relation faction="yaki" relation="1" />
-	  <relation faction="loanshark" relation="1" />
-	  <relation faction="scavenger" relation="1" />
-	  <relation faction="mindlessmercenaries " relation="-1" />
-    </relations>
-
-	<signals>
-      <response signal="policehalt" response="attack" />
-    </signals>
-  </faction>
-  <faction id="mindlessmercenaries" name="Zealot Merceneries" description="A group of zealot mercenaries in a crusade against all factions" shortname="MRC" prefixname="MSM" behaviourset="default" known="1" tags="aggressive notradeoffer">
-    <color r="255" g="0" b="0" />
-    <icon active="faction_visitor" inactive="faction_visitor" />
-	<licences>
-		<licence type="capitalequipment" factions="paranid teladi argon trinity buccaneers terran split holyorder pioneers freesplit court" />
-		<licence type="generaluseequipment" factions="paranid teladi argon trinity buccaneers terran split holyorder pioneers freesplit court" />
-		<licence type="militaryequipment" factions="paranid teladi argon trinity buccaneers terran split holyorder pioneers freesplit court" />
-		<licence type="capitalship" factions="paranid teladi argon trinity buccaneers terran split holyorder pioneers freesplit court" />
-		<licence type="generaluseship" factions="paranid teladi argon trinity buccaneers terran split holyorder pioneers freesplit court" />
-		<licence type="militaryship" factions="paranid teladi argon trinity buccaneers terran split holyorder pioneers freesplit court" />
-	</licences>
-    <relations locked="1"> 
-	  <relation faction="alliance" relation="-1" />
-	  <relation faction="invasionally" relation="-1" />
-      <relation faction="antigone" relation="-1" />
-      <relation faction="argon" relation="-1" />
-      <relation faction="buccaneers" relation="-1" />
-      <relation faction="civilian" relation="-1" />
-      <relation faction="criminal" relation="-1" />
-      <relation faction="hatikvah" relation="-1" />
-      <relation faction="holyorder" relation="-1" />
-      <relation faction="holyorderfanatic" relation="-1" />
-      <relation faction="ministry" relation="-1" />
-      <relation faction="paranid" relation="-1" />
-      <relation faction="player" relation="-1" />
-      <relation faction="scaleplate" relation="-1" />
-      <relation faction="smuggler" relation="-1" />
-      <relation faction="teladi" relation="-1" />
-      <relation faction="trinity" relation="-1" />
-      <relation faction="visitor" relation="-1" />
-      <relation faction="xenon" relation="-1" />
-	  <relation faction="fallensplit" relation="-1" />
-	  <relation faction="freesplit" relation="-1" />
-	  <relation faction="split" relation="-1" />
-	  <relation faction="pioneers" relation="-1" />
-	  <relation faction="terran" relation="-1" />
-	  <relation faction="yaki" relation="-1" />
-	  <relation faction="loanshark" relation="-1" />
-	  <relation faction="scavenger" relation="-1" />
-    </relations>
-	<signals>
-      <response signal="policehalt" response="attack" />
-    </signals>
-  </faction>
-</factions>
+<diff xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <add sel="//faction[@id='xenon']" pos="after">
+    <faction id="xenoninvasionresistance" name="{1972092403, 4101}" description="{1972092403, 4102}" shortname="{1972092403, 4103}" prefixname="{1972092403, 4104}" behaviourset="default" known="1" tags="protective" policefaction="player">
+      <color r="155" g="255" b="155" />
+      <icon active="faction_visitor" inactive="faction_visitor" />
+      <licences>
+        <licence type="capitalequipment" factions="paranid teladi argon trinity buccaneers terran split holyorder pioneers freesplit court" />
+        <licence type="generaluseequipment" factions="paranid teladi argon trinity buccaneers terran split holyorder pioneers freesplit court" />
+        <licence type="militaryequipment" factions="paranid teladi argon trinity buccaneers terran split holyorder pioneers freesplit court" />
+        <licence type="capitalship" factions="paranid teladi argon trinity buccaneers terran split holyorder pioneers freesplit court" />
+        <licence type="generaluseship" factions="paranid teladi argon trinity buccaneers terran split holyorder pioneers freesplit court" />
+        <licence type="militaryship" factions="paranid teladi argon trinity buccaneers terran split holyorder pioneers freesplit court" />
+      </licences>
+      <relations locked="1">
+        <relation faction="player" relation="1" />
+        <relation faction="khaak" relation="-1" />
+        <relation faction="alliance" relation="1" />
+        <relation faction="antigone" relation="1" />
+        <relation faction="argon" relation="1" />
+        <relation faction="buccaneers" relation="1" />
+        <relation faction="civilian" relation="1" />
+        <relation faction="hatikvah" relation="1" />
+        <relation faction="holyorder" relation="1" />
+        <relation faction="holyorderfanatic" relation="1" />
+        <relation faction="ministry" relation="1" />
+        <relation faction="paranid" relation="1" />
+        <relation faction="scaleplate" relation="1" />
+        <relation faction="smuggler" relation="1" />
+        <relation faction="teladi" relation="1" />
+        <relation faction="trinity" relation="1" />
+        <relation faction="visitor" relation="1" />
+        <relation faction="xenon" relation="-1" />
+        <relation faction="fallensplit" relation="1" />
+        <relation faction="freesplit" relation="1" />
+        <relation faction="split" relation="1" />
+        <relation faction="pioneers" relation="1" />
+        <relation faction="terran" relation="1" />
+        <relation faction="yaki" relation="1" />
+        <relation faction="loanshark" relation="1" />
+        <relation faction="scavenger" relation="1" />
+        <relation faction="mindlessmercenaries" relation="-1" />
+      </relations>
+      <signals>
+        <response signal="policehalt" response="attack" />
+      </signals>
+    </faction>
+    <faction id="mindlessmercenaries" name="{1972092403, 4201}" description="{1972092403, 4202}" shortname="{1972092403, 4203}" prefixname="{1972092403, 4204}" behaviourset="default" known="1" tags="aggressive notradeoffer">
+      <color r="255" g="0" b="0" />
+      <icon active="faction_visitor" inactive="faction_visitor" />
+      <licences>
+        <licence type="capitalequipment" factions="paranid teladi argon trinity buccaneers terran split holyorder pioneers freesplit court" />
+        <licence type="generaluseequipment" factions="paranid teladi argon trinity buccaneers terran split holyorder pioneers freesplit court" />
+        <licence type="militaryequipment" factions="paranid teladi argon trinity buccaneers terran split holyorder pioneers freesplit court" />
+        <licence type="capitalship" factions="paranid teladi argon trinity buccaneers terran split holyorder pioneers freesplit court" />
+        <licence type="generaluseship" factions="paranid teladi argon trinity buccaneers terran split holyorder pioneers freesplit court" />
+        <licence type="militaryship" factions="paranid teladi argon trinity buccaneers terran split holyorder pioneers freesplit court" />
+      </licences>
+      <relations locked="1">
+        <relation faction="alliance" relation="-1" />
+        <relation faction="xenoninvasionresistance" relation="-1" />
+        <relation faction="antigone" relation="-1" />
+        <relation faction="argon" relation="-1" />
+        <relation faction="buccaneers" relation="-1" />
+        <relation faction="civilian" relation="-1" />
+        <relation faction="criminal" relation="-1" />
+        <relation faction="hatikvah" relation="-1" />
+        <relation faction="holyorder" relation="-1" />
+        <relation faction="holyorderfanatic" relation="-1" />
+        <relation faction="ministry" relation="-1" />
+        <relation faction="paranid" relation="-1" />
+        <relation faction="player" relation="-1" />
+        <relation faction="scaleplate" relation="-1" />
+        <relation faction="smuggler" relation="-1" />
+        <relation faction="teladi" relation="-1" />
+        <relation faction="trinity" relation="-1" />
+        <relation faction="visitor" relation="-1" />
+        <relation faction="xenon" relation="-1" />
+        <relation faction="fallensplit" relation="-1" />
+        <relation faction="freesplit" relation="-1" />
+        <relation faction="split" relation="-1" />
+        <relation faction="pioneers" relation="-1" />
+        <relation faction="terran" relation="-1" />
+        <relation faction="yaki" relation="-1" />
+        <relation faction="loanshark" relation="-1" />
+        <relation faction="scavenger" relation="-1" />
+      </relations>
+      <signals>
+        <response signal="policehalt" response="attack" />
+      </signals>
+    </faction>
+  </add>
+</diff>

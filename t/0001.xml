@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<diff>
+  <add sel="/language">
+    <page id="1972092403" voice="no" title="Xenon Buff" descr="Text for Xenon Buff" >
+      <t id="1">Xenon Buff</t>
+      <t id="4001">Xenon Invader</t>
+      <t id="4002">Xenon Protector</t>
+      <t id="4003">Xenon Protector Destroyer Escort</t>
+      <t id="4004">Xenon Protector M Escort</t>
+      <t id="4005">Xenon Protector Frigate Escort</t>
+      <t id="4101">Gate Network Defenders</t>
+      <t id="4102">Gate Network Defenders Joint Force</t>
+      <t id="4103">DEF</t>
+      <t id="4104">GND</t>
+      <t id="4201">Zealot Mercenaries</t>
+      <t id="4202">A group of zealot mercenaries in a crusade against all factions</t>
+      <t id="4203">MZM</t>
+      <t id="4204">{1972092403, 4203}</t>
+      <t id="5000">{1972092403,1} Options</t>
+      <t id="5101">Reckoning home sectors</t>
+      <t id="5201">Invasion</t>
+      <t id="5202">Kha'aks can take part too</t>
+      <t id="5301">Psi Emitters</t>
+      <t id="6000">{1972092403,1} Options</t>
+      <t id="6101">Xenon will recreate infrastructure of their home sectors</t>
+      <t id="6201">Xenon will invade other sectors</t>
+      <t id="6202">Kha'aks will take part in invasion with some probability</t>
+      <t id="6301">Xenon will place Psi Emitters in sectors</t>
+      <t id="7001">Xenon Psi Emitter</t>
+      <t id="7002">The emitter will lure Xenon forces to roam the sector they are located</t>
+    </page>
+  </add>
+</diff>

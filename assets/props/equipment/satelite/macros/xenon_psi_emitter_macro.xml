@@ -4,7 +4,7 @@
   <macro name="xenon_psi_emitter_macro" class="satellite">
     <component ref="eq_arg_satellite_01" />
     <properties>
-      <identification name="Xenon Psi Emitter" description="The emitter will lure Xenon forces to roam the sector they are located." deployable="1" icon="mapob_navbeacon" />
+      <identification name="{1972092403, 7001}" description="{1972092403, 7002}" deployable="1" icon="mapob_navbeacon" />
       <explosioneffect strength="0" />
       <radar range="0" />
       <hull max="10000" />
