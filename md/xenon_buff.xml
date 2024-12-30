@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mdscript name="XenonBuff" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="md.xsd">
 	<cues>
-		<!-- <cue name="XenonBuff" instantiate="true" checkinterval="5min" checktime="player.age + 25s"> -->
+		<!-- <cue name="XenonBuff" instantiate="true" checkinterval="5min" checktime="player.age + 25s" version="2"> -->
 		<!-- revert back on production -->
-		<cue name="XenonBuff" instantiate="true" checkinterval="1min" checktime="player.age + 25s">
+		<cue name="XenonBuff" instantiate="true" checkinterval="1min" checktime="player.age + 25s" version="2">
 		<!-- revert back on production -->
 			<conditions>
 				<check_age min="120h"/>
@@ -14,76 +14,88 @@
 			<!--
 			<set_value name="player.entity.$XenonBuffedDelta" exact="0s"/>
 			<set_value name="player.entity.$LastTimeXenonBuffed" exact="player.age"/>
-			<set_value name="player.entity.$XenonBuffedInvasion" exact="0"/>
+			<set_value name="global.$XenonBuff.$Invasion.$State" exact="0"/>
 			-->
 				<debug_text text="'XenonBuff - Global HoldSectors Enabled : ' + @global.$XenonBuff.$HoldSectors.$Enabled"/>
+				<debug_text text="'XenonBuff - Global HoldSectors Last Time : ' + @global.$XenonBuff.$HoldSectors.$LastTime"/>
+				<debug_text text="'XenonBuff - Global HoldSectors Delta : ' + @global.$XenonBuff.$HoldSectors.$Delta"/>
 				<debug_text text="'XenonBuff - Global Invasion Enabled : ' + @global.$XenonBuff.$Invasion.$Enabled"/>
-				<debug_text text="'XenonBuff - Get Invasion Status ' + @player.entity.$XenonBuffedInvasion"/>
-				<debug_text text="'XenonBuff - Timer: Delta: ' + @player.entity.$XenonBuffedDelta"/>
-				<debug_text text="'XenonBuff - Timer: Last run: ' + @player.entity.$LastTimeXenonBuffed"/>
-				<debug_text text="'XenonBuff - Timer: game age: ' + player.age"/>
+				<debug_text text="'XenonBuff - Global Invasion Last Time : ' + @global.$XenonBuff.$Invasion.$LastTime"/>
+				<debug_text text="'XenonBuff - Global Invasion Delta : ' + @global.$XenonBuff.$Invasion.$Delta"/>
+				<debug_text text="'XenonBuff - Get Invasion Status ' + @global.$XenonBuff.$Invasion.$State"/>
 
-				<do_if value="@global.$XenonBuff.$HoldSectors.$Enabled or @global.$XenonBuff.$Invasion.$Enabled">
-					<debug_text text="'XenonBuff - Xenon Buffing is enabled'"/>
-					<do_if value="@player.entity.$XenonBuffedInvasion == null">
-						<set_value name="player.entity.$XenonBuffedInvasion" exact="0"/>
-						<debug_text text="'XenonBuff - Setting Invasion Default Status ' + @player.entity.$XenonBuffedInvasion"/>
-					</do_if>
-	<!--
-		<include_actions ref="XenonBuffAddTest"/>
-	-->
-
-					<debug_text text="'XenonBuff - Starting'"/>
-					<do_if value="@player.entity.$XenonBuffedDelta == null">
-						<set_value name="player.entity.$XenonBuffedDelta" exact="0s"/>
-						<debug_text text="'XenonBuff - Setting time delta for first time'"/>
-					</do_if>
-					<do_if value="@player.entity.$LastTimeXenonBuffed == null">
-						<set_value name="player.entity.$LastTimeXenonBuffed" exact="player.age"/>
-						<debug_text text="'XenonBuff - Setting time counter for first time'"/>
-					</do_if>
-					<debug_text text="'XenonBuff - Checking for timer triggers'"/>
-					<do_if value="player.age ge (@player.entity.$LastTimeXenonBuffed + @player.entity.$XenonBuffedDelta)">
-						<do_if value="@global.$XenonBuff.$HoldSectors.$Enabled">
-							<debug_text text="'XenonBuff - Start xenon Buffing procedures'"/>
-							<include_actions ref="XenonBuffSetTimers"/>
-							<!-- Refill Xenon Stations storage -->
-							<find_station name="$XenonStations" multiple="true" space="player.galaxy" functional="true">
-								<match_any>
-									<!--Target shipbuilding stations-->
-									<match_content class="class.buildmodule" />
-								</match_any>
-								<!-- Xenon owned -->
-								<match owner="faction.xenon"/>
-							</find_station>
-							<do_all exact="$XenonStations.count" counter="$i">
-								<set_value name="$XenonStation" exact="$XenonStations.{$i}"/>
-								<include_actions ref="XenonBuffAddWares"/>
-							</do_all>
-							<remove_value name="$XenonStations"/>
-							<remove_value name="$XenonStation"/>
-							<include_actions ref="XenonBuffAddProtectors"/>
-						<!-- Add xenon protectors -->
-						</do_if>
-						<!-- Add xenon invader fleets -->
-						<do_if value="@global.$XenonBuff.$Invasion.$Enabled">
-							<do_if value="@player.entity.$XenonBuffedInvasion == 0">
-								<set_value name="player.entity.$XenonBuffedInvasion" exact="1"/>
-								<run_actions ref="XenonBuffSetInvasionOrigin" result="$InvadingSector"/>
-								<run_actions ref="XenonBuffSetInvaderFleetTarget" result="$targets"/>
-								<set_value name="$InvasionTarget" exact="$targets.{1}"/>
-								<set_value name="$InvasionOtherTargets" exact="$targets.{2}"/>
-								<!-- Create a notification -->
-								<show_help custom="'Deep space probes has detected an enemy fleet signature heading towards ' + $InvadingSector.name + '. It will arrive whitin minutes.'" log="false" position="1" force="true" duration="8s" comment="Invaders Triggered"/>
-								<set_value name="$Header" exact="'\033R Early Warning System : Invasion Fleet Detected'"/>
-								<set_value name="$Body" exact="'Commander, deep space probes has detected an enemy fleet signature heading towards \033G' + $InvadingSector.name + '\033W. It will arrive whitin minutes.'"/>
-								<write_to_logbook title="$Header" text="$Body" category="alerts"/>
-								<signal_cue_instantly cue="XenonBuffAddInvaderFleet" param="[$InvadingSector, $InvasionTarget, $InvasionOtherTargets]" />
-							</do_if>
-						</do_if>
+				<do_if value="@global.$XenonBuff.$HoldSectors.$Enabled and player.age ge (global.$XenonBuff.$HoldSectors.$LastTime + global.$XenonBuff.$HoldSectors.$Delta)">
+					<debug_text text="'XenonBuff - Start Xenon Buffing HoldSectors procedures'"/>
+					<run_actions ref="XenonBuffSetTimers">
+						<param name="HoldSectors" value="true"/>
+					</run_actions>
+					<!-- Refill Xenon Stations storage -->
+					<find_station name="$XenonStations" multiple="true" space="player.galaxy" functional="true">
+						<match_any>
+							<!--Target shipbuilding stations-->
+							<match_content class="class.buildmodule" />
+						</match_any>
+						<!-- Xenon owned -->
+						<match owner="faction.xenon"/>
+					</find_station>
+					<do_all exact="$XenonStations.count" counter="$i">
+						<set_value name="$XenonStation" exact="$XenonStations.{$i}"/>
+						<include_actions ref="XenonBuffAddWares"/>
+					</do_all>
+					<remove_value name="$XenonStations"/>
+					<remove_value name="$XenonStation"/>
+					<!-- Add xenon protectors -->
+					<include_actions ref="XenonBuffAddProtectors"/>
+				</do_if>
+					<!-- Add xenon invader fleets -->
+				<do_if value="@global.$XenonBuff.$Invasion.$Enabled and player.age ge (global.$XenonBuff.$Invasion.$LastTime + global.$XenonBuff.$Invasion.$Delta)">
+					<debug_text text="'XenonBuff - Start Xenon Buffing Invasion procedures'"/>
+					<run_actions ref="XenonBuffSetTimers">
+						<param name="HoldSectors" value="false"/>
+					</run_actions>
+					<do_if value="@global.$XenonBuff.$Invasion.$State == 0">
+						<set_value name="global.$XenonBuff.$Invasion.$State" exact="1"/>
+						<run_actions ref="XenonBuffSetInvasionOrigin" result="$InvadingSector"/>
+						<run_actions ref="XenonBuffSetInvaderFleetTarget" result="$targets"/>
+						<set_value name="$InvasionTarget" exact="$targets.{1}"/>
+						<set_value name="$InvasionOtherTargets" exact="$targets.{2}"/>
+						<!-- Create a notification -->
+						<show_help custom="'Deep space probes has detected an enemy fleet signature heading towards ' + $InvadingSector.name + '. It will arrive whitin minutes.'" log="false" position="1" force="true" duration="8s" comment="Invaders Triggered"/>
+						<set_value name="$Header" exact="'\033R Early Warning System : Invasion Fleet Detected'"/>
+						<set_value name="$Body" exact="'Commander, deep space probes has detected an enemy fleet signature heading towards \033G' + $InvadingSector.name + '\033W. It will arrive whitin minutes.'"/>
+						<write_to_logbook title="$Header" text="$Body" category="alerts"/>
+						<signal_cue_instantly cue="XenonBuffAddInvaderFleet" param="[$InvadingSector, $InvasionTarget, $InvasionOtherTargets]" />
 					</do_if>
 				</do_if>
 			</actions>
+			<patch sinceversion="1" >
+				<debug_text text="'patch sinceversion 1, state: ' + this.state" />
+				<do_if value="player.entity.$XenonBuffedInvasion? and @player.entity.$XenonBuffedInvasion != null">
+					<set_value name="global.$XenonBuff.$Invasion.$State" exact="player.entity.$XenonBuffedInvasion"/>
+					<remove_value name="player.entity.$XenonBuffedInvasion"/>
+				</do_if>
+				<do_else>
+					<set_value name="global.$XenonBuff.$Invasion.$State" exact="0"/>
+				</do_else>
+				<do_if value="player.entity.$XenonBuffedDelta? and @player.entity.$XenonBuffedDelta != null">
+					<set_value name="global.$XenonBuff.$HoldSectors.$Delta" exact="player.entity.$XenonBuffedDelta"/>
+					<set_value name="global.$XenonBuff.$Invasion.$Delta" exact="player.entity.$XenonBuffedDelta"/>
+					<remove_value name="player.entity.$XenonBuffedDelta"/>
+				</do_if>
+				<do_else>
+					<set_value name="global.$XenonBuff.$HoldSectors.$Delta" exact="0s"/>
+					<set_value name="global.$XenonBuff.$Invasion.$Delta" exact="0s"/>
+				</do_else>
+				<do_if value="player.entity.$LastTimeXenonBuffed? and @player.entity.$LastTimeXenonBuffed != null">
+					<set_value name="global.$XenonBuff.$HoldSectors.$LastTime" exact="player.entity.$LastTimeXenonBuffed"/>
+					<set_value name="global.$XenonBuff.$Invasion.$LastTime" exact="player.entity.$LastTimeXenonBuffed"/>
+					<remove_value name="player.entity.$LastTimeXenonBuffed"/>
+				</do_if>
+				<do_else>
+					<set_value name="global.$XenonBuff.$HoldSectors.$LastTime" exact="0"/>
+					<set_value name="global.$XenonBuff.$Invasion.$LastTime" exact="0"/>
+				</do_else>
+			</patch>
 		</cue>
 
 		<library name="XenonBuffAddTest">
@@ -108,8 +120,8 @@
 				<write_to_logbook title="$Header" text="$Body" interaction="showonmap" object="$InvaderShip" category="alerts"/>
 				<debug_text text="'XenonBuff - notification added :' + $Body"/>
 				<signal_cue_instantly cue="XenonBuffMissionEliminateInvaders" param="[$AttackWave, $InvasionTarget, $InvadingSector, $InvaderShip]"/>
-				<set_value name="player.entity.$XenonBuffedInvasion" exact="1"/>
-				<debug_text text="'XenonBuff - Setting New Invasion Status ' + @player.entity.$XenonBuffedInvasion"/>
+				<set_value name="global.$XenonBuff.$Invasion.$State" exact="1"/>
+				<debug_text text="'XenonBuff - Setting New Invasion Status ' + @global.$XenonBuff.$Invasion.$State"/>
 				<debug_text text="'XenonBuff - mission created'"/>
 				<remove_value name="$Header"/>
 				<remove_value name="$Body"/>
@@ -1014,7 +1026,7 @@
 					</run_actions>
 				</do_if>
 				<do_else>
-					<set_value name="player.entity.$XenonBuffedInvasion" exact="0"/>
+					<set_value name="global.$XenonBuff.$Invasion.$State" exact="0"/>
 				</do_else>
 				<!-- Cleaning up some variables -->
 				<remove_value name="$fleetType"/>
@@ -1173,12 +1185,23 @@
 		</library>
 
 		<!-- Set timers for next Xenon Buff -->
-		<library name="XenonBuffSetTimers">
+		<library name="XenonBuffSetTimers" purpose="run_actions">
+			<params>
+				<param name="HoldSectors" default="true"/>
+			</params>
 			<actions>
-				<set_value name="player.entity.$XenonBuffedDelta" min="3h" max="5h"/>
-				<set_value name="player.entity.$LastTimeXenonBuffed" exact="player.age"/>
-				<debug_text text="'XenonBuff delta:' + player.entity.$XenonBuffedDelta"/>
-				<debug_text text="'XenonBuff time:' + player.entity.$LastTimeXenonBuffed"/>
+				<do_if value="$HoldSectors">
+					<set_value name="global.$XenonBuff.$HoldSectors.$LastTime" exact="player.age"/>
+					<set_value name="global.$XenonBuff.$HoldSectors.$Delta" min="3h" max="5h"/>
+					<debug_text text="'XenonBuff HoldSectors delta:' + global.$XenonBuff.$HoldSectors.$Delta"/>
+					<debug_text text="'XenonBuff HoldSectors time:' + global.$XenonBuff.$HoldSectors.$LastTime"/>
+				</do_if>
+				<do_else>
+					<set_value name="global.$XenonBuff.$Invasion.$LastTime" exact="player.age"/>
+					<set_value name="global.$XenonBuff.$Invasion.$Delta" min="3h" max="5h"/>
+					<debug_text text="'XenonBuff Invasion delta:' + global.$XenonBuff.$Invasion.$Delta"/>
+					<debug_text text="'XenonBuff Invasion time:' + global.$XenonBuff.$Invasion.$LastTime"/>
+				</do_else>
 			</actions>
 		</library>
 
@@ -1473,7 +1496,7 @@
 						<check_value value="$InvaderWave.count == 1"/>
 					</conditions>
 					<actions>
-						<set_value name="player.entity.$XenonBuffedInvasion" exact="0"/>
+						<set_value name="global.$XenonBuff.$Invasion.$State" exact="0"/>
 						<do_if value="$AllyFleet != null">
 							<do_all exact="$AllyFleet.count" counter="$i">
 								<add_effect object="$AllyFleet.{$i}.zone" effect="'jump_jumpin_capship'">

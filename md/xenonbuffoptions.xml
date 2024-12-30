@@ -11,8 +11,17 @@
 				<set_value name="global.$XenonBuff.$PsiEmitter" exact="table[]"/>
 				<!-- HoldSectors -->
 				<set_value name="global.$XenonBuff.$HoldSectors.$Enabled" exact="false"/>
+				<set_value name="global.$XenonBuff.$HoldSectors.$Delta" exact="0"/>
+				<set_value name="global.$XenonBuff.$HoldSectors.$LastTime" exact="0"/>
+				<set_value name="global.$XenonBuff.$HoldSectors.$DeltaMin" exact="3"/>
+				<set_value name="global.$XenonBuff.$HoldSectors.$DeltaMax" exact="5"/>
 				<!-- Invasion -->
 				<set_value name="global.$XenonBuff.$Invasion.$Enabled" exact="false"/>
+				<set_value name="global.$XenonBuff.$Invasion.$State" exact="0"/>
+				<set_value name="global.$XenonBuff.$Invasion.$Delta" exact="0"/>
+				<set_value name="global.$XenonBuff.$Invasion.$LastTime" exact="0"/>
+				<set_value name="global.$XenonBuff.$Invasion.$DeltaMin" exact="3"/>
+				<set_value name="global.$XenonBuff.$Invasion.$DeltaMax" exact="5"/>
 				<!-- KhaaksFleetEnabled -->
 				<set_value name="global.$XenonBuff.$Invasion.$KhaaksFleetEnabled" exact="false"/>
 				<!-- PsiEmitter -->
@@ -55,9 +64,45 @@
 							<set_value name="global.$XenonBuff.$HoldSectors.$Enabled" exact="false"/>
 							<set_value name="$MissingVarCount" exact="1" operation="add"/>
 						</do_if>
+						<do_if value="not global.$XenonBuff.$HoldSectors.$Delta?">
+							<set_value name="global.$XenonBuff.$HoldSectors.$Delta" exact="0"/>
+							<set_value name="$MissingVarCount" exact="1" operation="add"/>
+						</do_if>
+						<do_if value="not global.$XenonBuff.$HoldSectors.$LastTime?">
+							<set_value name="global.$XenonBuff.$HoldSectors.$LastTime" exact="0"/>
+							<set_value name="$MissingVarCount" exact="1" operation="add"/>
+						</do_if>
+						<do_if value="not global.$XenonBuff.$HoldSectors.$DeltaMin?">
+							<set_value name="global.$XenonBuff.$HoldSectors.$DeltaMin" exact="3"/>
+							<set_value name="$MissingVarCount" exact="1" operation="add"/>
+						</do_if>
+						<do_if value="not global.$XenonBuff.$HoldSectors.$DeltaMax?">
+							<set_value name="global.$XenonBuff.$HoldSectors.$DeltaMax" exact="5"/>
+							<set_value name="$MissingVarCount" exact="1" operation="add"/>
+						</do_if>
 						<!-- Invasion -->
 						<do_if value="not global.$XenonBuff.$Invasion.$Enabled?">
 							<set_value name="global.$XenonBuff.$Invasion.$Enabled" exact="false"/>
+							<set_value name="$MissingVarCount" exact="1" operation="add"/>
+						</do_if>
+						<do_if value="not global.$XenonBuff.$Invasion.$State?">
+							<set_value name="global.$XenonBuff.$Invasion.$State" exact="0"/>
+							<set_value name="$MissingVarCount" exact="1" operation="add"/>
+						</do_if>
+						<do_if value="not global.$XenonBuff.$Invasion.$Delta?">
+							<set_value name="global.$XenonBuff.$Invasion.$Delta" exact="0"/>
+							<set_value name="$MissingVarCount" exact="1" operation="add"/>
+						</do_if>
+						<do_if value="not global.$XenonBuff.$Invasion.$LastTime?">
+							<set_value name="global.$XenonBuff.$Invasion.$LastTime" exact="0"/>
+							<set_value name="$MissingVarCount" exact="1" operation="add"/>
+						</do_if>
+						<do_if value="not global.$XenonBuff.$Invasion.$DeltaMin?">
+							<set_value name="global.$XenonBuff.$Invasion.$DeltaMin" exact="3"/>
+							<set_value name="$MissingVarCount" exact="1" operation="add"/>
+						</do_if>
+						<do_if value="not global.$XenonBuff.$Invasion.$DeltaMax?">
+							<set_value name="global.$XenonBuff.$Invasion.$DeltaMax" exact="5"/>
 							<set_value name="$MissingVarCount" exact="1" operation="add"/>
 						</do_if>
 						<!-- KhaaksFleetEnabled -->
@@ -122,6 +167,128 @@
 						<signal_cue_instantly cue="md.Simple_Menu_API.Make_Text" param="table[
 								$col = 1,
 								$colSpan = 6,
+								$text = {1972092403,5102},
+								$mouseOverText= {1972092403,6102},
+							]"/>
+						<set_value name="$testTime" exact="8min" />
+						<set_value name="$testTimeText" exact="$testTime.formatted.default"/>
+						<debug_text text="'MOD: XenonBuff -- testTime: %s'.[$testTimeText]" context="false" filter="scripts"/>
+						<do_if value="global.$XenonBuff.$HoldSectors.$LastTime gt 0">
+							<set_value name="$testTime" exact="(player.age - global.$XenonBuff.$HoldSectors.$LastTime) * 1s" />
+							<set_value name="$testTimeText" exact="$testTime.formatted.default"/>
+							<debug_text text="'MOD: XenonBuff -- testTime: %s'.[$testTimeText]" context="false" filter="scripts"/>
+							<set_value name="$LastTimeDelta" exact="player.age - global.$XenonBuff.$HoldSectors.$LastTime"/>
+							<set_value name="$LastTimeDeltaText" exact="$LastTimeDelta.formatted.default"/>
+							<debug_text text="'MOD: XenonBuff -- LastTimeDeltaText: %s'.[$LastTimeDeltaText]" context="false" filter="scripts"/>
+						</do_if>
+						<do_else>
+							<set_value name="$LastTimeDeltaText" exact="''"/>
+						</do_else>
+						<run_actions ref="Format_Time" result="$TimeText">
+							<param name="Category" value="'$HoldSectors'" />
+							<param name="Variable" value="'$LastTime'" />
+						</run_actions>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Make_Text" param="table[
+								$col = 7,
+								$colSpan = 2,
+								$text   =  $TimeText.$Text,
+								$color  =  $TimeText.$Color,
+								$halign = 'center',
+							]"/>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Add_Row"/>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Make_Text" param="table[
+								$col = 1,
+								$colSpan = 6,
+								$text = {1972092403,5103},
+								$mouseOverText= {1972092403,6103},
+							]"/>
+						<run_actions ref="Format_Time" result="$TimeText">
+							<param name="Category" value="'$HoldSectors'" />
+							<param name="Variable" value="'$Delta'" />
+						</run_actions>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Make_Text" param="table[
+								$col = 7,
+								$colSpan = 2,
+								$text   =  $TimeText.$Text,
+								$color  =  $TimeText.$Color,
+								$halign = 'center',
+							]"/>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Add_Row"/>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Make_Text" param="table[
+								$col = 1,
+								$colSpan = 6,
+								$text = {1972092403,5104},
+								$mouseOverText= {1972092403,6104},
+							]"/>
+						<do_if value="global.$XenonBuff.$HoldSectors.$Enabled">
+							<signal_cue_instantly cue="md.Simple_Menu_API.Make_Button" param="table[
+									$col = 7,
+									$colSpan = 2,
+									$text = table[
+										$text   = {1001,3321},
+										$color  =  $TextGreen,
+										$halign = 'center',
+									],
+									$onClick = Execute_ActivateAction,
+									$onRightClick = Execute_ActivateAction,
+									$echo = ['$HoldSectors']
+								]"/>
+						</do_if>
+						<do_else>
+							<signal_cue_instantly cue="md.Simple_Menu_API.Make_Text" param="table[
+									$col = 7,
+									$colSpan = 2,
+									$text   = {1001,9408},
+									$color  =  $TextRed,
+									$halign = 'center',
+								]"/>
+						</do_else>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Add_Row"/>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Make_Text" param="table[
+								$col = 1,
+								$colSpan = 4,
+								$text = {1972092403,5105},
+								$mouseOverText= {1972092403,6105},
+							]"/>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Make_Slider" param="table[
+								$col = 5,
+								$colSpan = 4,
+								$onSliderCellConfirm = Execute_DynamicSlider,
+								$min = 0,
+								$minSelect = 1,
+								$max = 10,
+								$maxSelect = global.$XenonBuff.$HoldSectors.$DeltaMax,
+								$exceedMaxValue = false,
+								$start = global.$XenonBuff.$HoldSectors.$DeltaMin,
+								$step = 1,
+								$suffix = {1001,102},
+								$echo = ['$HoldSectors','$DeltaMin',global.$XenonBuff.$HoldSectors.$DeltaMin]
+							]"/>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Add_Row"/>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Make_Text" param="table[
+								$col = 1,
+								$colSpan = 4,
+								$text = {1972092403,5106},
+								$mouseOverText= {1972092403,6106},
+							]"/>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Make_Slider" param="table[
+								$col = 5,
+								$colSpan = 4,
+								$onSliderCellConfirm = Execute_DynamicSlider,
+								$min = 0,
+								$minSelect = global.$XenonBuff.$HoldSectors.$DeltaMin,
+								$max = 10,
+								$maxSelect = 10,
+								$exceedMaxValue = false,
+								$start = global.$XenonBuff.$HoldSectors.$DeltaMax,
+								$step = 1,
+								$suffix = {1001,102},
+								$echo = ['$HoldSectors','$DeltaMax',global.$XenonBuff.$HoldSectors.$DeltaMax]
+							]"/>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Add_Row"/>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Make_Text" param="table[
+								$col = 1,
+								$colSpan = 6,
 								$text = {1972092403,5201},
 								$mouseOverText= {1972092403,6201},
 							]"/>
@@ -144,20 +311,118 @@
 								$text = {1972092403,5202},
 								$mouseOverText= {1972092403,6202},
 							]"/>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Make_Text" param="table[
+								$col = 7,
+								$colSpan = 2,
+								$text   =  if global.$XenonBuff.$Invasion.$LastTime gt 0 then global.$XenonBuff.$Invasion.$LastTime else '-:-',
+								$color  =  if global.$XenonBuff.$Invasion.$LastTime gt 0 then $TextGreen else $TextRed,
+								$halign = 'center',
+							]"/>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Add_Row"/>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Make_Text" param="table[
+								$col = 1,
+								$colSpan = 6,
+								$text = {1972092403,5203},
+								$mouseOverText= {1972092403,6203},
+							]"/>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Make_Text" param="table[
+								$col = 7,
+								$colSpan = 2,
+								$text   =  if global.$XenonBuff.$Invasion.$Enabled and global.$XenonBuff.$Invasion.$LastTime gt 0 and global.$XenonBuff.$Invasion.$Delta gt 0 then global.$XenonBuff.$Invasion.$LastTime + global.$XenonBuff.$Invasion.$Delta else '-:-',
+								$color  =  if global.$XenonBuff.$Invasion.$Enabled and global.$XenonBuff.$Invasion.$LastTime gt 0 and global.$XenonBuff.$Invasion.$Delta gt 0 then $TextGreen else $TextRed,
+								$halign = 'center',
+							]"/>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Add_Row"/>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Make_Text" param="table[
+								$col = 1,
+								$colSpan = 6,
+								$text = {1972092403,5204},
+								$mouseOverText= {1972092403,6204},
+							]"/>
 						<do_if value="global.$XenonBuff.$Invasion.$Enabled">
+							<signal_cue_instantly cue="md.Simple_Menu_API.Make_Button" param="table[
+									$col = 7,
+									$colSpan = 2,
+									$text = table[
+										$text   = {1001,3321},
+										$color  =  $TextGreen,
+										$halign = 'center',
+									],
+									$onClick = Execute_ActivateAction,
+									$onRightClick = Execute_ActivateAction,
+									$echo = ['$Invasion']
+								]"/>
+						</do_if>
+						<do_else>
+							<signal_cue_instantly cue="md.Simple_Menu_API.Make_Text" param="table[
+									$col = 7,
+									$colSpan = 2,
+									$text   = {1001,9408},
+									$color  =  $TextRed,
+									$halign = 'center',
+								]"/>
+						</do_else>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Add_Row"/>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Make_Text" param="table[
+								$col = 1,
+								$colSpan = 4,
+								$text = {1972092403,5205},
+								$mouseOverText= {1972092403,6205},
+							]"/>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Make_Slider" param="table[
+								$col = 5,
+								$colSpan = 4,
+								$onSliderCellConfirm = Execute_DynamicSlider,
+								$min = 0,
+								$minSelect = 1,
+								$max = 10,
+								$maxSelect = global.$XenonBuff.$Invasion.$DeltaMax,
+								$exceedMaxValue = false,
+								$start = global.$XenonBuff.$Invasion.$DeltaMin,
+								$step = 1,
+								$suffix = {1001,102},
+								$echo = ['$Invasion','$DeltaMin',global.$XenonBuff.$Invasion.$DeltaMin]
+							]"/>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Add_Row"/>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Make_Text" param="table[
+								$col = 1,
+								$colSpan = 4,
+								$text = {1972092403,5206},
+								$mouseOverText= {1972092403,6206},
+							]"/>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Make_Slider" param="table[
+								$col = 5,
+								$colSpan = 4,
+								$onSliderCellConfirm = Execute_DynamicSlider,
+								$min = 0,
+								$minSelect = global.$XenonBuff.$Invasion.$DeltaMin,
+								$max = 10,
+								$maxSelect = 10,
+								$exceedMaxValue = false,
+								$start = global.$XenonBuff.$Invasion.$DeltaMax,
+								$step = 1,
+								$suffix = {1001,102},
+								$echo = ['$Invasion','$DeltaMax',global.$XenonBuff.$Invasion.$DeltaMax]
+							]"/>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Add_Row"/>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Make_Text" param="table[
+								$col = 1,
+								$colSpan = 6,
+								$text = {1972092403,5209},
+								$mouseOverText= {1972092403,6209},
+							]"/>
 						<signal_cue_instantly cue="md.Simple_Menu_API.Make_Button" param="table[
 								$col = 7,
 								$colSpan = 2,
 								$text = table[
-								  $text   =  if global.$XenonBuff.$Invasion.$KhaaksFleetEnabled then {1001,4825} else {1001,8942},
-								  $color  =  if global.$XenonBuff.$Invasion.$KhaaksFleetEnabled then $TextGreen else $TextRed,
-								  $halign = 'center',
+									$text   =  if global.$XenonBuff.$Invasion.$KhaaksFleetEnabled then {1001,4825} else {1001,8942},
+									$color  =  if global.$XenonBuff.$Invasion.$KhaaksFleetEnabled then $TextGreen else $TextRed,
+									$halign = 'center',
 								],
 								$onClick = Execute_DynamicEnable,
 								$onRightClick = Execute_DynamicEnable,
 								$echo = ['$Invasion', '$Enabled', global.$XenonBuff.$Invasion.$Enabled]
 							]"/>
-						</do_if>
 						<signal_cue_instantly cue="md.Simple_Menu_API.Add_Row"/>
 						<signal_cue_instantly cue="md.Simple_Menu_API.Make_Text" param="table[
 								$col = 1,
@@ -213,6 +478,61 @@
 						<signal_cue_instantly cue="md.Simple_Menu_API.Refresh_Menu"/>
 					</actions>
 				</cue>
+				<cue name="Execute_ActivateAction" instantiate="true">
+					<conditions>
+						<event_cue_signalled/>
+					</conditions>
+					<actions>
+						<do_if value="event.param.$echo?">
+							<do_if value="global.$XenonBuff.{event.param.$echo.{1}}.$Delta? and global.$XenonBuff.{event.param.$echo.{1}}.$LastTime">
+								<set_value name="global.$XenonBuff.{event.param.$echo.{1}}.$Delta" exact="player.age - global.$XenonBuff.{event.param.$echo.{1}}.$LastTime"/>
+								<debug_text text="'MOD: XenonBuff -- Set global.$XenonBuff.%s.$Delta to %s'.[event.param.$echo.{1},global.$XenonBuff.{event.param.$echo.{1}}.$Delta]" context="false" filter="scripts"/>
+							</do_if>
+							<do_else>
+								<debug_text text="'MOD: XenonBuff -- ERROR -- could not find global.$XenonBuff.%s.$Delta or global.$XenonBuff.%s.$Delta'.[event.param.$echo.{1},event.param.$echo.{1}]" context="false" filter="error"/>
+							</do_else>
+						</do_if>
+						<signal_cue_instantly cue="md.Simple_Menu_API.Refresh_Menu"/>
+					</actions>
+				</cue>
+				<library name="Format_Time" purpose="run_actions">
+					<params>
+						<param name="Category" default="''"/>
+						<param name="Variable" default="''"/>
+					</params>
+					<actions>
+						<debug_text text="'MOD: XenonBuff -- Formatted Category: %s, Variable: %s'.[$Category, $Variable]" context="false" filter="scripts"/>
+						<set_value name="$TimeValue" exact="0" />
+						<do_if value="$Variable == '$LastTime'">
+							<debug_text text="'MOD: XenonBuff -- LastTime: %s, gt 0 %s, le player.age'.[global.$XenonBuff.{$Category}.$LastTime, global.$XenonBuff.{$Category}.$LastTime gt 0, player.age gt global.$XenonBuff.{$Category}.$LastTime]" context="false" filter="scripts"/>
+							<do_if value="global.$XenonBuff.{$Category}.$LastTime gt 0 and player.age gt global.$XenonBuff.{$Category}.$LastTime">
+								<set_value name="$TimeValue" exact="(player.age - global.$XenonBuff.{$Category}.$LastTime) * 1s" />
+							</do_if>
+						</do_if>
+						<do_elseif value="$Variable == '$Delta'">
+							<debug_text text="'MOD: XenonBuff -- Enabled: %s'.[global.$XenonBuff.{$Category}.$Enabled]" context="false" filter="scripts"/>
+							<debug_text text="'MOD: XenonBuff -- LastTime: %s, gt 0 %s'.[global.$XenonBuff.{$Category}.$LastTime, global.$XenonBuff.{$Category}.$LastTime gt 0]" context="false" filter="scripts"/>
+							<debug_text text="'MOD: XenonBuff -- Delta: %s, gt 0 %s'.[global.$XenonBuff.{$Category}.$Delta, global.$XenonBuff.{$Category}.$Delta gt 0]" context="false" filter="scripts"/>
+							<debug_text text="'MOD: XenonBuff --  LastTime + Delta - player.age: %s'.[global.$XenonBuff.{$Category}.$LastTime + global.$XenonBuff.{$Category}.$Delta - player.age]" context="false" filter="scripts"/>
+							<do_if value="global.$XenonBuff.{$Category}.$Enabled and global.$XenonBuff.{$Category}.$LastTime gt 0 and global.$XenonBuff.{$Category}.$Delta gt 0">
+								<do_if value="(global.$XenonBuff.{$Category}.$LastTime + global.$XenonBuff.{$Category}.$Delta - player.age) gt 0">
+									<set_value name="$TimeValue" exact="(global.$XenonBuff.{$Category}.$LastTime + global.$XenonBuff.{$Category}.$Delta - player.age) * 1s" />
+								</do_if>
+							</do_if>
+						</do_elseif>
+						<do_if value="$TimeValue gt 0">
+							<set_value name="$TimeText" exact="$TimeValue.formatted.default"/>
+							<set_value name="$TimeColor" exact="'Color.text_success'" />
+						</do_if>
+						<do_else>
+							<set_value name="$TimeText" exact="''"/>
+							<set_value name="$TimeColor" exact="'Color.text_failure'" />
+						</do_else>
+						<remove_value name="$TimeValue"/>
+						<debug_text text="'MOD: XenonBuff -- Formatted time: %s, color: %s'.[$TimeText, $TimeColor]" context="false" filter="scripts"/>
+						<return value="table[$Text = $TimeText, $Color = $TimeColor]"/>
+					</actions>
+				</library>
 			</cues>
 		</cue>
 	</cues>

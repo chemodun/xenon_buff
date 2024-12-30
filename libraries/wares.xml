@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <diff xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<add sel="//ware[@id='satellite_mk2'" pos="after">
-		<ware id="xenon_psi_emitter_mk1" name="{1972092403, 7002}" description="{1972092403, 7002}" transport="equipment" volume="1" tags="satellite noplayerbuild">
+	<add sel="//ware[@id='satellite_mk2']" pos="after">
+		<ware id="xenon_psi_emitter_mk1" name="{1972092403, 7002}" description="{1972092403, 7002}" transport="equipment" volume="1" tags="satellite noplayerbuild equipment">
 			<price min="845800" average="901420" max="1054580" />
-			<production time="60" amount="0" method="default" name="Xenon Psi Emitter">
-			</production>
-			<production time="60" amount="0" method="xenon" name="Xenon Psi Emitter">
-			</production>
-			<production time="60" amount="0" method="terran" name="Xenon Psi Emitter">
-			</production>
+			<production time="60" amount="0" method="default" name="Xenon Psi Emitter"/>
+			<production time="60" amount="0" method="xenon" name="Xenon Psi Emitter"/>
+			<production time="60" amount="0" method="terran" name="Xenon Psi Emitter"/>
 			<component ref="xenon_psi_emitter_macro" amount="0" />
 			<use threshold="0" />
 		</ware>
