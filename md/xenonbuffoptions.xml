@@ -460,7 +460,7 @@
               <do_if value="global.$XenonBuff.{event.param.$echo.{1}}.{event.param.$echo.{2}}?">
                 <set_value name="global.$XenonBuff.{event.param.$echo.{1}}.{event.param.$echo.{2}}" exact="event.param.$value"/>
                 <do_if value="event.param.$echo.{2} == '$DeltaMin'">
-                  <do_if value="global.$XenonBuff.{event.param.$echo.{1}}.$Delta gt global.$XenonBuff.{event.param.$echo.{1}}.$DeltaMin">
+                  <do_if value="global.$XenonBuff.{event.param.$echo.{1}}.$Delta lt global.$XenonBuff.{event.param.$echo.{1}}.$DeltaMin">
                     <set_value name="global.$XenonBuff.{event.param.$echo.{1}}.$Delta" exact="global.$XenonBuff.{event.param.$echo.{1}}.$DeltaMin"/>
                     <debug_text text="'MOD: XenonBuff -- Updated global.$XenonBuff.%s.$Delta from %s to %s'.[event.param.$echo.{1},event.param.$echo.{2},global.$XenonBuff.{event.param.$echo.{1}}.$Delta]" context="false" filter="scripts"/>
                     <run_actions ref="XenonBuff.XenonBuffSetTimers">
@@ -470,10 +470,10 @@
                   </do_if>
                 </do_if>
                 <do_elseif value="event.param.$echo.{2} == '$DeltaMax'">
-                  <do_if value="global.$XenonBuff.{event.param.$echo.{1}}.$Delta lt global.$XenonBuff.{event.param.$echo.{1}}.$DeltaMax">
+                  <do_if value="global.$XenonBuff.{event.param.$echo.{1}}.$Delta gt global.$XenonBuff.{event.param.$echo.{1}}.$DeltaMax">
                     <set_value name="global.$XenonBuff.{event.param.$echo.{1}}.$Delta" exact="global.$XenonBuff.{event.param.$echo.{1}}.$DeltaMax"/>
                     <debug_text text="'MOD: XenonBuff -- Updated global.$XenonBuff.%s.$Delta from %s to %s'.[event.param.$echo.{1},event.param.$echo.{2},global.$XenonBuff.{event.param.$echo.{1}}.$Delta]" context="false" filter="scripts"/>
-                    <run_actions ref="XenonBuff.XenonBuffSetTimers">
+                    <run_actions ref="md.XenonBuff.XenonBuffSetTimers">
 						          <param name="Category" value="event.param.$echo.{1}"/>
 				              <param name="UpdateAll" value="false" />
 					          </run_actions>
@@ -537,7 +537,7 @@
               <set_value name="$TimeText" exact="''"/>
             </do_else>
             <remove_value name="$TimeValue"/>
-            <debug_text text="'MOD: XenonBuff -- Formatted time: %s, color: %s'.[$TimeText, $TimeColor]" context="false" filter="scripts"/>
+            <debug_text text="'MOD: XenonBuff -- Formatted time: %s'.[$TimeText]" context="false" filter="scripts"/>
             <return value="$TimeText"/>
           </actions>
         </library>
