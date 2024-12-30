@@ -52,6 +52,14 @@
       <t id="6301">Xenon will place Psi Emitters in sectors</t>
       <t id="7001">Xenon Psi Emitter</t>
       <t id="7002">The emitter will lure Xenon forces to roam the sector they are located</t>
+      <t id="8101">Commander! %s</t>
+      <t id="8102">\033R Early Warning System : Invasion Fleet Detected</t>
+      <t id="8103">!ALERT!</t>
+      <t id="8111">Deep space probes has detected an enemy fleet signature heading towards %s! It will arrive within minutes!</t>
+      <t id="8112">Huge enemy fleet signature has being detected!</t>
+      <t id="8113">Their primary target seems to be %s!</t>
+      <t id="8901">\033G%s\033W</t>
+      <t id="8902">\033R%s\033W</t>
     </page>
   </add>
 </diff>

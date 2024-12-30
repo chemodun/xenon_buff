@@ -60,9 +60,11 @@
             <set_value name="$InvasionTarget" exact="$targets.{1}"/>
             <set_value name="$InvasionOtherTargets" exact="$targets.{2}"/>
             <!-- Create a notification -->
-            <show_help custom="'Deep space probes has detected an enemy fleet signature heading towards ' + $InvadingSector.name + '. It will arrive whitin minutes.'" log="false" position="1" force="true" duration="8s" comment="Invaders Triggered"/>
-            <set_value name="$Header" exact="'\033R Early Warning System : Invasion Fleet Detected'"/>
-            <set_value name="$Body" exact="'Commander, deep space probes has detected an enemy fleet signature heading towards \033G' + $InvadingSector.name + '\033W. It will arrive whitin minutes.'"/>
+            <show_help custom="{1972092403, 8111}.[$InvadingSector.knownname]" log="false" position="1" force="true" duration="8s" comment="Invaders Triggered"/>
+            <set_value name="$Header" exact="{1972092403, 8102}"/>
+            <set_value name="$SectorName" exact="{1972092403, 8901}.[$InvadingSector.knownname]"/>
+            <set_value name="$Message" exact="{1972092403, 8111}.[$SectorName]"/>
+            <set_value name="$Body" exact="{1972092403, 8101}.[$Message]"/>
             <write_to_logbook title="$Header" text="$Body" category="alerts"/>
             <signal_cue_instantly cue="XenonBuffAddInvaderFleet" param="[$InvadingSector, $InvasionTarget, $InvasionOtherTargets]" />
           </do_if>
@@ -114,11 +116,18 @@
       </params>
       <actions>
         <debug_text text="'XenonBuff - init notification and mission'"/>
-        <set_value name="$Header" exact="'\033R Early Warning System : Invasion Fleet Detected'"/>
-        <set_value name="$Body" exact="'Commander, huge enemy fleet signature has being detected.\nTheir primary target seems to be \033G' + $InvasionTarget.name +'\033W but they surely wont stop there.'"/>
-        <show_help custom="'!ALERT! Enemy fleet has emerged in ' + $InvadingSector.name" log="false" position="1" force="true" duration="8s" comment="Invaders Spawned"/>
+        <set_value name="$Message" exact="{1972092403, 8113}.[$InvadingSector.knownname]"/>
+        <show_help custom="'%s %s %s'[{1972092403, 8103}, {1972092403, 8112}, $Message]" log="false" position="1" force="true" duration="8s" comment="Invaders Triggered"/>
+
+        <set_value name="$Header" exact="{1972092403, 8102}"/>
+        <set_value name="$SectorName" exact="{1972092403, 8901}.[$InvadingSector.knownname]"/>
+        <set_value name="$Message" exact="{1972092403, 8113}.[$SectorName]"/>
+        <set_value name="$Alert" exact="{1972092403, 8902}.[{1972092403, 8103}]"/>
+        <set_value name="$Message" exact="'%s %s\n%s'.[$Alert, {1972092403, 8112}, $Message]"/>
+        <set_value name="$Body" exact="{1972092403, 8101}.[$Message]"/>
         <write_to_logbook title="$Header" text="$Body" interaction="showonmap" object="$InvaderShip" category="alerts"/>
         <debug_text text="'XenonBuff - notification added :' + $Body"/>
+
         <signal_cue_instantly cue="XenonBuffMissionEliminateInvaders" param="[$AttackWave, $InvasionTarget, $InvadingSector, $InvaderShip]"/>
         <set_value name="global.$XenonBuff.$Invasion.$State" exact="1"/>
         <debug_text text="'XenonBuff - Setting New Invasion Status ' + @global.$XenonBuff.$Invasion.$State"/>
