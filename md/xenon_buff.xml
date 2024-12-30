@@ -27,7 +27,7 @@
 				<do_if value="@global.$XenonBuff.$HoldSectors.$Enabled and player.age ge (global.$XenonBuff.$HoldSectors.$LastTime + global.$XenonBuff.$HoldSectors.$Delta)">
 					<debug_text text="'XenonBuff - Start Xenon Buffing HoldSectors procedures'"/>
 					<run_actions ref="XenonBuffSetTimers">
-						<param name="HoldSectors" value="true"/>
+						<param name="Category" value="'$HoldSectors'"/>
 					</run_actions>
 					<!-- Refill Xenon Stations storage -->
 					<find_station name="$XenonStations" multiple="true" space="player.galaxy" functional="true">
@@ -51,7 +51,7 @@
 				<do_if value="@global.$XenonBuff.$Invasion.$Enabled and player.age ge (global.$XenonBuff.$Invasion.$LastTime + global.$XenonBuff.$Invasion.$Delta)">
 					<debug_text text="'XenonBuff - Start Xenon Buffing Invasion procedures'"/>
 					<run_actions ref="XenonBuffSetTimers">
-						<param name="HoldSectors" value="false"/>
+						<param name="Category" value="'$Invasion'"/>
 					</run_actions>
 					<do_if value="@global.$XenonBuff.$Invasion.$State == 0">
 						<set_value name="global.$XenonBuff.$Invasion.$State" exact="1"/>
@@ -1187,21 +1187,15 @@
 		<!-- Set timers for next Xenon Buff -->
 		<library name="XenonBuffSetTimers" purpose="run_actions">
 			<params>
-				<param name="HoldSectors" default="true"/>
+				<param name="Category" default="''"/>
+				<param name="UpdateAll" default="true" />
 			</params>
 			<actions>
-				<do_if value="$HoldSectors">
-					<set_value name="global.$XenonBuff.$HoldSectors.$LastTime" exact="player.age"/>
-					<set_value name="global.$XenonBuff.$HoldSectors.$Delta" min="3h" max="5h"/>
-					<debug_text text="'XenonBuff HoldSectors delta:' + global.$XenonBuff.$HoldSectors.$Delta"/>
-					<debug_text text="'XenonBuff HoldSectors time:' + global.$XenonBuff.$HoldSectors.$LastTime"/>
+				<do_if value="$UpdateAll">
+					<set_value name="global.$XenonBuff.{$Category}.$LastTime" exact="player.age"/>
 				</do_if>
-				<do_else>
-					<set_value name="global.$XenonBuff.$Invasion.$LastTime" exact="player.age"/>
-					<set_value name="global.$XenonBuff.$Invasion.$Delta" min="3h" max="5h"/>
-					<debug_text text="'XenonBuff Invasion delta:' + global.$XenonBuff.$Invasion.$Delta"/>
-					<debug_text text="'XenonBuff Invasion time:' + global.$XenonBuff.$Invasion.$LastTime"/>
-				</do_else>
+				<set_value name="global.$XenonBuff.{$Category}.$Delta" min="global.$XenonBuff.{$Category}.$DeltaMin * 1h" max="global.$XenonBuff.{$Category}.$DeltaMin * 1h"/>
+				<debug_text text="'XenonBuff %s - LastTime: %s, Delta: %s'.[$Category, global.$XenonBuff.{$Category}.$LastTime, global.$XenonBuff.{$Category}.$Delta]"/>
 			</actions>
 		</library>
 
