@@ -1194,7 +1194,9 @@
 				<do_if value="$UpdateAll">
 					<set_value name="global.$XenonBuff.{$Category}.$LastTime" exact="player.age"/>
 				</do_if>
-				<set_value name="global.$XenonBuff.{$Category}.$Delta" min="global.$XenonBuff.{$Category}.$DeltaMin * 1h" max="global.$XenonBuff.{$Category}.$DeltaMin * 1h"/>
+				<do_if value="$UpdateAll or (global.$XenonBuff.{$Category}.$Delta gt 0)">
+					<set_value name="global.$XenonBuff.{$Category}.$Delta" min="global.$XenonBuff.{$Category}.$DeltaMin * 1h" max="global.$XenonBuff.{$Category}.$DeltaMin * 1h"/>
+				</do_if>
 				<debug_text text="'XenonBuff %s - LastTime: %s, Delta: %s'.[$Category, global.$XenonBuff.{$Category}.$LastTime, global.$XenonBuff.{$Category}.$Delta]"/>
 			</actions>
 		</library>

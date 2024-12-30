@@ -459,8 +459,9 @@
             <do_if value="event.param.$echo?">
               <do_if value="global.$XenonBuff.{event.param.$echo.{1}}.{event.param.$echo.{2}}?">
                 <set_value name="global.$XenonBuff.{event.param.$echo.{1}}.{event.param.$echo.{2}}" exact="event.param.$value"/>
+                <debug_text text="'MOD: XenonBuff -- Updated global.$XenonBuff.%s.%s from %s to %s'.[event.param.$echo.{1},event.param.$echo.{2},event.param.$echo.{3},global.$XenonBuff.{event.param.$echo.{1}}.{event.param.$echo.{2}}]" context="false" filter="scripts"/>
                 <do_if value="event.param.$echo.{2} == '$DeltaMin'">
-                  <do_if value="global.$XenonBuff.{event.param.$echo.{1}}.$Delta lt global.$XenonBuff.{event.param.$echo.{1}}.$DeltaMin">
+                  <do_if value="global.$XenonBuff.{event.param.$echo.{1}}.$Delta lt (global.$XenonBuff.{event.param.$echo.{1}}.$DeltaMin * 1h)">
                     <set_value name="global.$XenonBuff.{event.param.$echo.{1}}.$Delta" exact="global.$XenonBuff.{event.param.$echo.{1}}.$DeltaMin"/>
                     <debug_text text="'MOD: XenonBuff -- Updated global.$XenonBuff.%s.$Delta from %s to %s'.[event.param.$echo.{1},event.param.$echo.{2},global.$XenonBuff.{event.param.$echo.{1}}.$Delta]" context="false" filter="scripts"/>
                     <run_actions ref="XenonBuff.XenonBuffSetTimers">
@@ -470,7 +471,7 @@
                   </do_if>
                 </do_if>
                 <do_elseif value="event.param.$echo.{2} == '$DeltaMax'">
-                  <do_if value="global.$XenonBuff.{event.param.$echo.{1}}.$Delta gt global.$XenonBuff.{event.param.$echo.{1}}.$DeltaMax">
+                  <do_if value="global.$XenonBuff.{event.param.$echo.{1}}.$Delta gt (global.$XenonBuff.{event.param.$echo.{1}}.$DeltaMax * 1h)">
                     <set_value name="global.$XenonBuff.{event.param.$echo.{1}}.$Delta" exact="global.$XenonBuff.{event.param.$echo.{1}}.$DeltaMax"/>
                     <debug_text text="'MOD: XenonBuff -- Updated global.$XenonBuff.%s.$Delta from %s to %s'.[event.param.$echo.{1},event.param.$echo.{2},global.$XenonBuff.{event.param.$echo.{1}}.$Delta]" context="false" filter="scripts"/>
                     <run_actions ref="md.XenonBuff.XenonBuffSetTimers">
@@ -479,7 +480,6 @@
 					          </run_actions>
                   </do_if>
                 </do_elseif>
-                <debug_text text="'MOD: XenonBuff -- Updated global.$XenonBuff.%s.%s from %s to %s'.[event.param.$echo.{1},event.param.$echo.{2},event.param.$echo.{3},global.$XenonBuff.{event.param.$echo.{1}}.{event.param.$echo.{2}}]" context="false" filter="scripts"/>
               </do_if>
               <do_else>
                 <debug_text text="'MOD: XenonBuff -- ERROR -- could not find global.$XenonBuff.%s.%s'.[event.param.$echo.{1},event.param.$echo.{2}]" context="false" filter="error"/>
