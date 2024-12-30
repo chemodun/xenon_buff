@@ -464,7 +464,7 @@
                   <do_if value="global.$XenonBuff.{event.param.$echo.{1}}.$Delta lt (global.$XenonBuff.{event.param.$echo.{1}}.$DeltaMin * 1h)">
                     <set_value name="global.$XenonBuff.{event.param.$echo.{1}}.$Delta" exact="global.$XenonBuff.{event.param.$echo.{1}}.$DeltaMin"/>
                     <debug_text text="'MOD: XenonBuff -- Updated global.$XenonBuff.%s.$Delta from %s to %s'.[event.param.$echo.{1},event.param.$echo.{2},global.$XenonBuff.{event.param.$echo.{1}}.$Delta]" context="false" filter="scripts"/>
-                    <run_actions ref="XenonBuff.XenonBuffSetTimers">
+                    <run_actions ref="md.XenonBuff.XenonBuffSetTimers">
 						          <param name="Category" value="event.param.$echo.{1}"/>
 				              <param name="UpdateAll" value="false" />
 					          </run_actions>
