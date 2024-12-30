@@ -15,6 +15,7 @@
         <set_value name="global.$XenonBuff.$HoldSectors.$LastTime" exact="0"/>
         <set_value name="global.$XenonBuff.$HoldSectors.$DeltaMin" exact="3"/>
         <set_value name="global.$XenonBuff.$HoldSectors.$DeltaMax" exact="5"/>
+        <set_value name="global.$XenonBuff.$HoldSectors.$ActivityLevel" exact="2"/>
         <!-- Invasion -->
         <set_value name="global.$XenonBuff.$Invasion.$Enabled" exact="false"/>
         <set_value name="global.$XenonBuff.$Invasion.$State" exact="0"/>
@@ -22,6 +23,7 @@
         <set_value name="global.$XenonBuff.$Invasion.$LastTime" exact="0"/>
         <set_value name="global.$XenonBuff.$Invasion.$DeltaMin" exact="3"/>
         <set_value name="global.$XenonBuff.$Invasion.$DeltaMax" exact="5"/>
+        <set_value name="global.$XenonBuff.$Invasion.$ActivityLevel" exact="2"/>
         <!-- KhaaksFleetEnabled -->
         <set_value name="global.$XenonBuff.$Invasion.$KhaaksFleetEnabled" exact="false"/>
         <!-- PsiEmitter -->
@@ -80,6 +82,10 @@
               <set_value name="global.$XenonBuff.$HoldSectors.$DeltaMax" exact="5"/>
               <set_value name="$MissingVarCount" exact="1" operation="add"/>
             </do_if>
+            <do_if value="not global.$XenonBuff.$HoldSectors.$ActivityLevel?">
+              <set_value name="global.$XenonBuff.$HoldSectors.$ActivityLevel" exact="2"/>
+              <set_value name="$MissingVarCount" exact="1" operation="add"/>
+            </do_if>
             <!-- Invasion -->
             <do_if value="not global.$XenonBuff.$Invasion.$Enabled?">
               <set_value name="global.$XenonBuff.$Invasion.$Enabled" exact="false"/>
@@ -103,6 +109,10 @@
             </do_if>
             <do_if value="not global.$XenonBuff.$Invasion.$DeltaMax?">
               <set_value name="global.$XenonBuff.$Invasion.$DeltaMax" exact="5"/>
+              <set_value name="$MissingVarCount" exact="1" operation="add"/>
+            </do_if>
+            <do_if value="not global.$XenonBuff.$Invasion.$ActivityLevel?">
+              <set_value name="global.$XenonBuff.$Invasion.$ActivityLevel" exact="2"/>
               <set_value name="$MissingVarCount" exact="1" operation="add"/>
             </do_if>
             <!-- KhaaksFleetEnabled -->
@@ -272,6 +282,26 @@
             <signal_cue_instantly cue="md.Simple_Menu_API.Add_Row"/>
             <signal_cue_instantly cue="md.Simple_Menu_API.Make_Text" param="table[
                 $col = 1,
+                $colSpan = 4,
+                $text = {1972092403,5111},
+                $mouseOverText= {1972092403,6111},
+              ]"/>
+            <signal_cue_instantly cue="md.Simple_Menu_API.Make_Slider" param="table[
+                $col = 5,
+                $colSpan = 4,
+                $onSliderCellConfirm = Execute_DynamicSlider,
+                $min = 1,
+                $minSelect = 1,
+                $max = 3,
+                $maxSelect = 3,
+                $exceedMaxValue = false,
+                $start = global.$XenonBuff.$HoldSectors.$ActivityLevel,
+                $step = 1,
+                $echo = ['$HoldSectors','$ActivityLevel',global.$XenonBuff.$HoldSectors.$ActivityLevel]
+              ]"/>
+            <signal_cue_instantly cue="md.Simple_Menu_API.Add_Row"/>
+            <signal_cue_instantly cue="md.Simple_Menu_API.Make_Text" param="table[
+                $col = 1,
                 $colSpan = 6,
                 $text = {1972092403,5201},
                 $mouseOverText= {1972092403,6201},
@@ -412,6 +442,26 @@
                 $onClick = Execute_DynamicEnable,
                 $onRightClick = Execute_DynamicEnable,
                 $echo = ['$Invasion', '$Enabled', global.$XenonBuff.$Invasion.$Enabled]
+              ]"/>
+              <signal_cue_instantly cue="md.Simple_Menu_API.Add_Row"/>
+              <signal_cue_instantly cue="md.Simple_Menu_API.Make_Text" param="table[
+                $col = 1,
+                $colSpan = 4,
+                $text = {1972092403,5211},
+                $mouseOverText= {1972092403,6211},
+              ]"/>
+            <signal_cue_instantly cue="md.Simple_Menu_API.Make_Slider" param="table[
+                $col = 5,
+                $colSpan = 4,
+                $onSliderCellConfirm = Execute_DynamicSlider,
+                $min = 1,
+                $minSelect = 1,
+                $max = 3,
+                $maxSelect = 3,
+                $exceedMaxValue = false,
+                $start = global.$XenonBuff.$Invasion.$ActivityLevel,
+                $step = 1,
+                $echo = ['$Invasion','$ActivityLevel',global.$XenonBuff.$Invasion.$ActivityLevel]
               ]"/>
             <signal_cue_instantly cue="md.Simple_Menu_API.Add_Row"/>
             <signal_cue_instantly cue="md.Simple_Menu_API.Make_Text" param="table[

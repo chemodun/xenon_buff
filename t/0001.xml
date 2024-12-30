@@ -23,6 +23,7 @@
       <t id="5104"> - Activate now</t>
       <t id="5105"> - Minimal delta time</t>
       <t id="5106"> - Maximal delta time</t>
+      <t id="5111"> - Activity level</t>
       <t id="5201">Invasion</t>
       <t id="5202">{1972092403,5102}</t>
       <t id="5203">{1972092403,5103}</t>
@@ -30,6 +31,7 @@
       <t id="5205">{1972092403,5105}</t>
       <t id="5206">{1972092403,5106}</t>
       <t id="5209"> - Kha'aks can take part too</t>
+      <t id="5211">{1972092403,5111}</t>
       <t id="5301">Psi Emitters</t>
       <t id="6000">{1972092403,1} Options</t>
       <t id="6101">Xenon will recreate infrastructure of their home sectors</t>
@@ -38,6 +40,7 @@
       <t id="6104">Activate the action now</t>
       <t id="6105">Minimal time between rounds activation</t>
       <t id="6106">Maximal time between rounds activation</t>
+      <t id="6111">Activity level of the action</t>
       <t id="6201">Xenon will invade into other sectors</t>
       <t id="6202">{1972092403,6102}</t>
       <t id="6203">{1972092403,6103}</t>
@@ -45,6 +48,7 @@
       <t id="6205">{1972092403,6105}</t>
       <t id="6206">{1972092403,6106}</t>
       <t id="6209">Kha'aks will take part in invasion with some probability</t>
+      <t id="6211">{1972092403,6111}</t>
       <t id="6301">Xenon will place Psi Emitters in sectors</t>
       <t id="7001">Xenon Psi Emitter</t>
       <t id="7002">The emitter will lure Xenon forces to roam the sector they are located</t>
